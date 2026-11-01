@@ -2,6 +2,8 @@
 <html lang="de" class="nojs">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Was heisst das eigentlich? · Ça veut dire quoi, au juste ?</title>
 <script>document.documentElement.className='js';try{var t=localStorage.getItem('ki-glossar-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
@@ -95,6 +97,8 @@
   .soscard li .frsub{margin-top:2px}
   .sosfoot{margin:16px 0 0;padding:14px 16px;border-radius:12px;background:var(--soft);font-size:15px}
   .sosfoot .frsub{margin-top:6px}
+  #foot p{margin:0}
+  #foot .privacy{margin-top:12px;font-size:.9em;opacity:.85}
   .noscript{max-width:560px;margin:40px max(16px,calc((100% - 560px)/2));padding:24px;border-radius:16px;background:var(--surface);border:1px solid var(--line);border-top:6px solid var(--accent);font-size:17px}
   .noscript a{color:var(--accent-ink);font-weight:700;word-break:break-all}
   .nojs header.hero:not(.shero),.nojs .toolbar,.nojs .layout,.nojs #xtip,.nojs body>footer{display:none}
@@ -373,6 +377,8 @@
 <script>
 /* ============ TEXTE / TEXTES ============ */
 const UI_BASE = {
+  privacy:{de:"<b>Datenschutz:</b> Diese Seite speichert keine persönlichen Daten. Nur dein eigener Browser merkt sich die gewählte Sprache und den Hell-Dunkel-Modus. Bereitgestellt wird die Seite über GitHub Pages, GitHub protokolliert dabei technische Zugriffsdaten wie IP-Adressen.",
+           fr:"<b>Protection des données :</b> ce site n'enregistre aucune donnée personnelle. Seul votre navigateur retient la langue choisie et le mode clair ou sombre. Le site est hébergé sur GitHub Pages, qui enregistre des données techniques d'accès comme les adresses IP."},
   searchShort:{de:"Suchen …", fr:"Chercher …", both:"Suchen …"},
   eyebrow:{de:"KI-Glossar · {n} Begriffe", fr:"Glossaire de l'IA · {n} termes"},
   h1:{de:"Was heisst das <em>eigentlich</em>?", fr:"Ça veut dire quoi, <em>au juste</em> ?"},
@@ -2352,7 +2358,7 @@ function renderMain(){
     <ol class="sources">${SOURCES.map(q=>`<li><a href="${q.u}" target="_blank" rel="noopener">${L(q.t)}</a></li>`).join("")}</ol>
   </section>`;
   document.getElementById("main").innerHTML = h;
-  document.getElementById("foot").innerHTML = L(UI.foot);
+  document.getElementById("foot").innerHTML = `<p>${L(UI.foot)}</p><p class="privacy">${L(UI.privacy)}</p>`;
 }
 
 const XNAME = {mythen:"mythChip", quiz:"quizChip", ampel:"ampelChip", themen:"topChip", adresse:"urlChip", notfall:"sosChip", quellen:"srcH"};
