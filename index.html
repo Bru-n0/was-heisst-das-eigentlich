@@ -2,7 +2,7 @@
 <html lang="de" class="nojs">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-XrB3OiW9ftV290dFtn4wFNsouviyExeQbuxRlYUXyg8='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Was heisst das eigentlich? · Ça veut dire quoi, au juste ?</title>
@@ -2115,8 +2115,9 @@ const SETS = {
   cyber:{label:{de:"Cybersicherheit", fr:"Cybersécurité"}, cats:CYB_CATS, terms:CYB_TERMS, order:CYB_ORDER, myths:CYB_MYTHS, quiz:CYB_QUIZ, sos:CYB_SOS, sources:CYB_SOURCES,
       refs:[{id:"link-and-url", cat:"betrug"}, {id:"data-protection", cat:"crecht"}, {id:"ai-powered-phishing", cat:"cki"}, {id:"deepfake", cat:"cki"}, {id:"prompt-injection", cat:"cki"}], ui:CYB_UI}
 };
+const isTopic = k => typeof k==="string" && Object.prototype.hasOwnProperty.call(SETS, k);
 let topic = "ki";
-try{ const h = location.hash.slice(1); const st = localStorage.getItem("ki-glossar-topic"); if(SETS[h]) topic = h; else if(SETS[st]) topic = st; }catch(_){}
+try{ const h = location.hash.slice(1); const st = localStorage.getItem("ki-glossar-topic"); if(isTopic(h)) topic = h; else if(isTopic(st)) topic = st; }catch(_){}
 let UI, CATS, TERMS, ORDER, MYTHS, QUIZ, AMPEL, TOPICS, SOURCES, REFS, URLX, SOS;
 function useTopic(k){
   const S = SETS[k];
@@ -2458,7 +2459,7 @@ function goTo(id){
 
 /* Themenwechsel */
 function setTopic(k, keepScroll){
-  if(!SETS[k]) return;
+  if(!isTopic(k)) return;
   topic = k; useTopic(k); quizScore = 0; active = "all";
   try{ localStorage.setItem("ki-glossar-topic", k); }catch(_){}
   try{ history.replaceState(null, "", "#"+k); }catch(_){}
@@ -2527,7 +2528,7 @@ document.getElementById("q").addEventListener("input", ()=>{
 });
 
 NARROW.addEventListener?.("change", renderNav);
-window.addEventListener("hashchange", ()=>{ const h = location.hash.slice(1); if(SETS[h] && h!==topic) setTopic(h); });
+window.addEventListener("hashchange", ()=>{ const h = location.hash.slice(1); if(isTopic(h) && h!==topic) setTopic(h); });
 renderAll(); paintThemeBtn();
 </script>
 </body>
