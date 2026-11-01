@@ -2,7 +2,7 @@
 <html lang="de" class="nojs">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-XrB3OiW9ftV290dFtn4wFNsouviyExeQbuxRlYUXyg8='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-GIk1KkbVs0G39gHlL4rWOq5XWdT41nIClAHCxgjBolc='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Was heisst das eigentlich? · Ça veut dire quoi, au juste ?</title>
@@ -377,6 +377,7 @@
 <script>
 /* ============ TEXTE / TEXTES ============ */
 const UI_BASE = {
+  rights:{de:"© 2026 Bru-n0. Alle Rechte vorbehalten. Offizielle Adresse: bru-n0.github.io/was-heisst-das-eigentlich", fr:"© 2026 Bru-n0. Tous droits réservés. Adresse officielle : bru-n0.github.io/was-heisst-das-eigentlich"},
   privacy:{de:"<b>Datenschutz:</b> Diese Seite speichert keine persönlichen Daten. Nur dein eigener Browser merkt sich die gewählte Sprache und den Hell-Dunkel-Modus. Bereitgestellt wird die Seite über GitHub Pages, GitHub protokolliert dabei technische Zugriffsdaten wie IP-Adressen.",
            fr:"<b>Protection des données :</b> ce site n'enregistre aucune donnée personnelle. Seul votre navigateur retient la langue choisie et le mode clair ou sombre. Le site est hébergé sur GitHub Pages, qui enregistre des données techniques d'accès comme les adresses IP."},
   searchShort:{de:"Suchen …", fr:"Chercher …", both:"Suchen …"},
@@ -2359,7 +2360,7 @@ function renderMain(){
     <ol class="sources">${SOURCES.map(q=>`<li><a href="${q.u}" target="_blank" rel="noopener">${L(q.t)}</a></li>`).join("")}</ol>
   </section>`;
   document.getElementById("main").innerHTML = h;
-  document.getElementById("foot").innerHTML = `<p>${L(UI.foot)}</p><p class="privacy">${L(UI.privacy)}</p>`;
+  document.getElementById("foot").innerHTML = `<p>${L(UI.foot)}</p><p class="privacy">${L(UI.privacy)}</p><p class="privacy">${L(UI.rights)}</p>`;
 }
 
 const XNAME = {mythen:"mythChip", quiz:"quizChip", ampel:"ampelChip", themen:"topChip", adresse:"urlChip", notfall:"sosChip", quellen:"srcH"};
