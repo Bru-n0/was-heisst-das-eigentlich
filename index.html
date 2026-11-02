@@ -2,7 +2,7 @@
 <html lang="de" class="nojs">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-6xRYweVsd/QPZpJxbGI4R+bVh9GC5Ls81z8LMwSM3Tw='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-j1ZQFhtmX5vkHD3rIwlzfJWOP+qxh2Mf4G9rrkQHH6Q='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Was heisst das eigentlich? · Ça veut dire quoi, au juste ?</title>
@@ -2552,9 +2552,21 @@ document.addEventListener("click", e=>{
   const fallback = ()=>{ const ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy");}catch(_){} ta.remove(); done(); };
   try{ navigator.clipboard.writeText(txt).then(done, fallback); }catch(_){ fallback(); }
 });
+/* Suchergebnisse in den sichtbaren Bereich holen */
+function revealResults(){
+  const ew = document.getElementById("elsewhere"), em = document.getElementById("empty");
+  const firstCard = [...document.querySelectorAll("#glossary .card")].find(c=>c.style.display!=="none");
+  const target = !ew.hidden ? ew : firstCard ? firstCard.closest("section.cat") : em;
+  if(!target) return;
+  const bar = document.querySelector(".toolbar").offsetHeight;
+  const top = target.getBoundingClientRect().top;
+  if(top < bar || top > window.innerHeight * 0.6) window.scrollTo({top: top + window.scrollY - bar - 16, behavior:"instant"});
+}
 document.getElementById("q").addEventListener("input", ()=>{
   if(EXTRAS().includes(active)) select("all", false);
-  apply(); spy();
+  apply();
+  if(document.getElementById("q").value.trim()) revealResults();
+  spy();
 });
 
 NARROW.addEventListener?.("change", renderNav);
