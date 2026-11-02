@@ -2,7 +2,7 @@
 <html lang="de" class="nojs">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-j1ZQFhtmX5vkHD3rIwlzfJWOP+qxh2Mf4G9rrkQHH6Q='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-mfiBo3LBTj7QNdGYqr+qrZ8haaUc740BHtCZCFSQdmA='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Was heisst das eigentlich? · Ça veut dire quoi, au juste ?</title>
@@ -89,6 +89,14 @@
   .urlex li.ko .mark{background:var(--r-bg);color:var(--r-tx);border:1px solid var(--r-bd)}
   .urlex li.ok{border-color:var(--g-bd)}
   .urlex li.ko mark{background:var(--r-bg);color:var(--r-tx);box-shadow:inset 0 0 0 1px var(--r-bd)}
+  .facts{display:grid;grid-template-columns:max-content 1fr;gap:3px 12px;margin:10px 0 12px;padding:10px 12px;border-radius:10px;background:var(--soft);font-size:13.5px;line-height:1.4}
+  .facts dt{font-weight:600;color:var(--muted)} .facts dd{margin:0}
+  .pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
+  .prow{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:14px 16px}
+  .prow h3{margin:0 0 6px;font-size:16px;line-height:1.3} .prow p{margin:0;font-size:15px}
+  .prow h3 .frsub,.pickrules h3 .frsub{font-size:.85em;font-weight:500;margin-top:2px} .prow p .frsub{margin-top:4px}
+  .pickrules{margin:16px 0 0;padding:14px 16px;border-radius:12px;background:var(--soft);font-size:15px}
+  .pickrules h3{margin:0 0 8px;font-size:16px} .pickrules ul{margin:0;padding-left:20px;display:grid;gap:8px}
   .sos{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:14px}
   .soscard{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:14px;padding:18px 18px 14px}
   .soscard h3{margin:0 0 10px;font-size:17px;line-height:1.3}
@@ -342,6 +350,7 @@
     .urlbox{padding:16px}
     .urlex li{padding:10px}
     .soscard{padding:16px 14px 12px}
+    .facts{grid-template-columns:1fr;gap:0} .facts dd{margin-bottom:6px} .facts dd:last-child{margin-bottom:0}
     #xtip{max-width:calc(100vw - 24px)}
   }
   @media print{
@@ -398,7 +407,7 @@ const UI_BASE = {
   lead:{de:"Prompt, LLM, Halluzination, KI-Agent: Alle reden heute über KI. Oft fallen dabei Begriffe, die kompliziert klingen und kaum jemand erklärt. Wer nicht in der IT arbeitet, nickt dann mit oder schaltet ab. Dieses Glossar erklärt die Wörter, die du in Meetings, Mails und Medien immer wieder hörst, damit du mitreden kannst. Beispiele aus Job und Alltag zeigen, was sie konkret bedeuten.",
         fr:"Prompt, LLM, hallucination, agent IA : aujourd'hui, tout le monde parle d'IA. On entend souvent des termes qui semblent compliqués et que presque personne n'explique. Quand on ne travaille pas dans l'informatique, on finit par hocher la tête ou décrocher. Ce glossaire explique les mots que vous entendez constamment en réunion, dans les e-mails et dans les médias, pour que vous puissiez participer à la conversation. Des exemples tirés du travail et du quotidien montrent ce qu'ils signifient concrètement."},
   bTerms:{de:"Begriffe", fr:"termes"},
-  bCats:{de:"7 Themenbereiche", fr:"7 thèmes"},
+  bCats:{de:"8 Themenbereiche", fr:"8 thèmes"},
   bTopics:{de:"10 Themenvorschläge", fr:"10 idées de thèmes"},
   search:{de:"Begriff suchen, z. B. „Prompt“ …", fr:"Rechercher un terme, p. ex. «prompt» …", both:"Suchen / Rechercher … (z. B. „Prompt“, «données»)"},
   all:{de:"Alle", fr:"Tous"},
@@ -417,6 +426,15 @@ const UI_BASE = {
   ampelH:{de:"Die Daten-Ampel: Was darf in den Chat?", fr:"Le feu tricolore des données : que peut-on mettre dans le chat ?"},
   ampelP:{de:"Bevor du etwas in ein KI-Tool kopierst, frag dich kurz: Wäre es schlimm, wenn das öffentlich würde? Im Zweifel gilt immer die Regel deines Arbeitgebers.",
           fr:"Avant de copier quelque chose dans un outil d'IA, demandez-vous : serait-ce grave si cela devenait public ? En cas de doute, ce sont toujours les règles de votre employeur qui s'appliquent."},
+  fWho:{de:"Anbieter", fr:"Éditeur"},
+  fFree:{de:"Gratis", fr:"Gratuit"},
+  fTrain:{de:"Training mit deinen Chats", fr:"Entraînement avec vos échanges"},
+  pickNum:{de:"Spickzettel", fr:"Aide-mémoire"},
+  pickChip:{de:"Welches Tool wofür?", fr:"Quel outil pour quoi ?"},
+  pickH:{de:"Welches Tool wofür?", fr:"Quel outil pour quelle tâche ?"},
+  pickP:{de:"Diese Übersicht zeigt, womit du für eine Aufgabe anfangen kannst. Bei der Arbeit gilt zuerst die Regel deines Arbeitgebers.",
+         fr:"Cet aperçu indique par quel outil commencer selon la tâche. Au travail, les règles de votre employeur passent avant tout."},
+  pickRules:{de:"Drei Regeln für alle Tools", fr:"Trois règles pour tous les outils"},
   topNum:{de:"Loslegen", fr:"C'est parti"},
   topChip:{de:"Themenvorschläge", fr:"Idées de thèmes"},
   topH:{de:"10 Themenvorschläge zum Einstieg", fr:"10 idées de thèmes pour démarrer"},
@@ -486,7 +504,8 @@ const UI_BASE = {
 
 const KI_CATS = [
   {id:"grundlagen", icon:"🧭", color:"#3c3489", cb:"#afa9ec", cl:"#eeedfe", name:{de:"Grundlagen", fr:"Notions de base"}, desc:{de:"Was ist KI überhaupt, und wie lernt sie?", fr:"Qu'est-ce que l'IA et comment apprend-elle ?"}},
-  {id:"genai", icon:"✨", color:"#712b13", cb:"#f0997b", cl:"#faece7", name:{de:"Generative KI und Chatbots", fr:"IA générative et chatbots"}, desc:{de:"Die Tools, über die alle reden: ChatGPT, Claude, Gemini, Copilot und Co.", fr:"Les outils dont tout le monde parle : ChatGPT, Claude, Gemini, Copilot et cie."}},
+  {id:"genai", icon:"✨", color:"#712b13", cb:"#f0997b", cl:"#faece7", name:{de:"Generative KI und Chatbots", fr:"IA générative et chatbots"}, desc:{de:"Wie Chatbots und Sprachmodelle funktionieren und wo ihre Grenzen liegen.", fr:"Comment fonctionnent les chatbots et les modèles de langage, et où sont leurs limites."}},
+  {id:"tools", icon:"🧩", color:"#633806", cb:"#ef9f27", cl:"#faeeda", name:{de:"Bekannte KI-Tools", fr:"Les outils d'IA connus"}, desc:{de:"ChatGPT, Claude, Gemini und Co. im Überblick: wer dahintersteckt, was gratis ist und wo du das Training mit deinen Chats ausschaltest. Geordnet nach Herkunft, ohne Rangliste.", fr:"ChatGPT, Claude, Gemini et cie en un coup d'œil : qui est derrière, ce qui est gratuit et où désactiver l'entraînement avec vos échanges. Classés par origine, sans palmarès."}},
   {id:"prompt", icon:"💬", color:"#085041", cb:"#5dcaa5", cl:"#e1f5ee", name:{de:"Richtig fragen (Prompting)", fr:"Bien formuler (prompting)"}, desc:{de:"Wie du der KI sagst, was du willst, und es auch bekommst.", fr:"Comment dire à l'IA ce que vous voulez, et l'obtenir."}},
   {id:"alltag", icon:"🧰", color:"#0c447c", cb:"#85b7eb", cl:"#e6f1fb", name:{de:"KI im Arbeitsalltag", fr:"L'IA au travail"}, desc:{de:"Wo KI dir im Job konkret Arbeit abnimmt.", fr:"Où l'IA allège concrètement votre travail."}},
   {id:"sicher", icon:"🛡️", color:"#72243e", cb:"#ed93b1", cl:"#fbeaf0", name:{de:"Sicherheit und Datenschutz", fr:"Sécurité et protection des données"}, desc:{de:"Wie du dich, deine Daten und deine Firma schützt.", fr:"Comment vous protéger, vous, vos données et votre entreprise."}},
@@ -636,6 +655,115 @@ const KI_TERMS = [
    p:{de:"Bei vielen Chatbots lässt sich ein solcher Denkmodus einschalten.",
       fr:"Beaucoup de chatbots permettent d'activer un tel mode réflexion."}},
 
+  /* ---------- BEKANNTE KI-TOOLS / OUTILS D'IA CONNUS ---------- */
+  {cat:"tools", st:1, en:"ChatGPT",
+   t:{de:"ChatGPT", fr:"ChatGPT"},
+   f:{who:{de:"OpenAI, USA", fr:"OpenAI, États-Unis"}, free:{de:"Ja, mit Grenzen", fr:"Oui, avec des limites"}, train:{de:"Standardmässig an, abschaltbar", fr:"Activé par défaut, désactivable"}},
+   e:{de:"Der <strong>KI-Chatbot</strong>, der Ende 2022 den KI-Boom ausgelöst hat. Er schreibt, fasst zusammen, übersetzt, erstellt Bilder und beantwortet Fragen.",
+      fr:"Le <strong>chatbot d'IA</strong> qui a déclenché l'essor de l'IA générative fin 2022. Il rédige, résume, traduit, crée des images et répond aux questions."},
+   j:{de:"Du lässt dir drei Vorschläge für eine höfliche Absage an einen Lieferanten machen und passt den besten an.",
+      fr:"Vous demandez trois propositions de refus poli à un fournisseur, puis vous adaptez la meilleure."},
+   p:{de:"Schalte unter Einstellungen › Datenkontrollen „Das Modell für alle verbessern“ aus. Dann nutzt OpenAI neue Chats nicht mehr fürs Training.",
+      fr:"Dans les paramètres, rubrique des données, désactivez «Améliorer le modèle pour tout le monde». OpenAI n'utilisera plus vos nouvelles conversations pour l'entraînement."}},
+  {cat:"tools", st:1, en:"Claude",
+   t:{de:"Claude", fr:"Claude"},
+   f:{who:{de:"Anthropic, USA", fr:"Anthropic, États-Unis"}, free:{de:"Ja, mit Grenzen", fr:"Oui, avec des limites"}, train:{de:"Standardmässig an, abschaltbar", fr:"Activé par défaut, désactivable"}},
+   e:{de:"Ein <strong>KI-Chatbot</strong> von Anthropic. Er schreibt, fasst lange Dokumente zusammen, wertet Daten aus und hilft beim Programmieren.",
+      fr:"Un <strong>chatbot d'IA</strong> d'Anthropic. Il rédige, résume de longs documents, analyse des données et aide à programmer."},
+   j:{de:"Du lädst einen Bericht mit 40 Seiten hoch und lässt dir die fünf wichtigsten Punkte für die Teamsitzung herausziehen.",
+      fr:"Vous chargez un rapport de 40 pages et demandez les cinq points essentiels pour la séance d'équipe."},
+   p:{de:"Deaktiviere unter Einstellungen › Datenschutz die Option zum Verbessern von Claude. Dann speichert Anthropic deine Chats rund 30 Tage statt bis zu fünf Jahre.",
+      fr:"Dans Paramètres › Confidentialité, désactivez l'option qui sert à améliorer Claude. Anthropic conserve alors vos conversations environ 30 jours au lieu de cinq ans au maximum."}},
+  {cat:"tools", st:1, ja:1, en:"Gemini",
+   t:{de:"Gemini", fr:"Gemini"},
+   f:{who:{de:"Google, USA", fr:"Google, États-Unis"}, free:{de:"Ja, mit Grenzen", fr:"Oui, avec des limites"}, train:{de:"Standardmässig an, abschaltbar", fr:"Activé par défaut, désactivable"}},
+   e:{de:"Der <strong>KI-Chatbot von Google</strong>. Er arbeitet mit Gmail, Google Drive und Android-Handys zusammen.",
+      fr:"Le <strong>chatbot d'IA de Google</strong>. Il fonctionne avec Gmail, Google Drive et les téléphones Android."},
+   j:{de:"Du fotografierst eine Zimmerpflanze mit gelben Blättern und fragst Gemini, was ihr fehlt.",
+      fr:"Vous photographiez une plante d'intérieur aux feuilles jaunies et demandez à Gemini ce qui ne va pas."},
+   p:{de:"Wer „Aktivitäten speichern“ ausschaltet, stoppt das Training mit neuen Chats. Google behält sie trotzdem 72 Stunden, von Menschen geprüfte Chats bis zu drei Jahre.",
+      fr:"Si vous désactivez l'enregistrement de l'activité, vos nouvelles conversations ne servent plus à l'entraînement. Google les garde pourtant 72 heures, et jusqu'à trois ans celles relues par des humains."}},
+  {cat:"tools", st:1, ja:1, en:"Meta AI",
+   t:{de:"Meta AI", fr:"Meta AI"},
+   f:{who:{de:"Meta, USA", fr:"Meta, États-Unis"}, free:{de:"Ja", fr:"Oui"}, train:{de:"Kein einfacher Schalter", fr:"Pas de réglage simple"}},
+   e:{de:"Der <strong>KI-Assistent von Meta</strong>, erkennbar an einem farbigen Kreis. Er ist in WhatsApp, Instagram und Facebook schon eingebaut. Installieren musst du nichts.",
+      fr:"<strong>L'assistant IA de Meta</strong>, reconnaissable à un cercle coloré. Il est déjà intégré à WhatsApp, Instagram et Facebook : rien à installer."},
+   j:{de:"Im Gruppenchat schreibt jemand „@MetaAI“ und lässt sich ein Restaurant vorschlagen. Die Antwort sehen alle in der Gruppe.",
+      fr:"Dans un groupe WhatsApp, quelqu'un écrit «@MetaAI» et demande un restaurant. Tout le groupe voit la réponse."},
+   p:{de:"Ganz abschalten lässt sich Meta AI in WhatsApp nicht. Schreib dem Kreis nichts, was du nicht auch Meta erzählen würdest.",
+      fr:"Impossible de désactiver complètement Meta AI dans WhatsApp. N'écrivez au cercle rien que vous ne confieriez pas aussi à Meta."}},
+  {cat:"tools", st:1, en:"Microsoft Copilot",
+   t:{de:"Copilot (Microsoft)", fr:"Copilot (Microsoft)"},
+   f:{who:{de:"Microsoft, USA", fr:"Microsoft, États-Unis"}, free:{de:"Privat ja, im Job über die Firmenlizenz", fr:"Oui à titre privé, au travail via la licence de l'entreprise"}, train:{de:"Privat abschaltbar, Firmenkonto ohne Training", fr:"Désactivable à titre privé, pas d'entraînement avec un compte d'entreprise"}},
+   e:{de:"So heisst der <strong>KI-Assistent von Microsoft</strong>. Er steckt in Word, Outlook, Excel und Teams. Der Name passt: Die KI liest die Karte, du fährst.",
+      fr:"C'est le nom de <strong>l'assistant IA de Microsoft</strong>. Il est intégré à Word, Outlook, Excel et Teams. Le nom dit bien ce qu'il fait : l'IA lit la carte, vous conduisez."},
+   j:{de:"In Outlook: „Fass diesen Mailverlauf zusammen.“ In Excel: „Welche Filiale hatte im März den höchsten Umsatz?“",
+      fr:"Dans Outlook : «Résume cet échange d'e-mails.» Dans Excel : «Quelle filiale a fait le plus gros chiffre d'affaires en mars ?»"},
+   p:{de:"Ob du Copilot im Job nutzen darfst und mit welchen Daten, regelt dein Arbeitgeber. Privat schaltest du unter Profil › Datenschutz das Modelltraining für Text und Sprache aus.",
+      fr:"Au travail, c'est votre employeur qui décide si vous pouvez utiliser Copilot et avec quelles données. À titre privé, désactivez l'entraînement sur le texte et la voix dans Profil › Confidentialité."}},
+  {cat:"tools", st:1, ja:1, en:"Perplexity",
+   t:{de:"Perplexity", fr:"Perplexity"},
+   f:{who:{de:"Perplexity AI, USA", fr:"Perplexity AI, États-Unis"}, free:{de:"Ja, mit Grenzen", fr:"Oui, avec des limites"}, train:{de:"Standardmässig an, abschaltbar nur mit Konto", fr:"Activé par défaut, désactivable seulement avec un compte"}},
+   e:{de:"Eine <strong>Suchmaschine mit KI</strong>. Sie durchsucht das Web, fasst die Treffer zusammen und zeigt die Quellen gleich mit.",
+      fr:"Un <strong>moteur de recherche à IA</strong>. Il parcourt le web, résume les résultats et indique directement ses sources."},
+   j:{de:"Du fragst, welche Förderbeiträge dein Kanton für Solaranlagen zahlt, und klickst die genannten Quellen an.",
+      fr:"Vous demandez quelles subventions votre canton verse pour les panneaux solaires, puis vous ouvrez les sources indiquées."},
+   p:{de:"Prüfe die Quellen, bevor du eine Antwort weitergibst. Das Training schaltest du unter Einstellungen › Präferenzen aus, das geht nur mit Konto.",
+      fr:"Vérifiez les sources avant de transmettre une réponse. L'entraînement se désactive dans Paramètres › Préférences, uniquement avec un compte."}},
+  {cat:"tools", st:1, en:"DeepSeek",
+   t:{de:"DeepSeek", fr:"DeepSeek"},
+   f:{who:{de:"DeepSeek, China", fr:"DeepSeek, Chine"}, free:{de:"Ja", fr:"Oui"}, train:{de:"Standardmässig an, abschaltbar", fr:"Activé par défaut, désactivable"}},
+   e:{de:"Ein <strong>KI-Chatbot aus China</strong>. Er machte Anfang 2025 Schlagzeilen, weil er stark und günstig war. Der Anbieter speichert die Daten auf Servern in China.",
+      fr:"Un <strong>chatbot d'IA chinois</strong>. Il a fait les gros titres début 2025, car il était performant et bon marché. L'éditeur stocke les données sur des serveurs en Chine."},
+   j:{de:"Ein Kollege schwärmt von DeepSeek. Du testest es mit einer allgemeinen Frage, aber nie mit Firmendaten.",
+      fr:"Un collègue ne jure que par DeepSeek. Vous le testez avec une question générale, mais jamais avec des données de l'entreprise."},
+   p:{de:"Auch mit ausgeschaltetem Training bleiben deine Eingaben in China und unterstehen chinesischem Recht. Firmendaten und Persönliches gehören deshalb nicht hinein.",
+      fr:"Même sans entraînement, vos saisies restent en Chine et relèvent du droit chinois. Les données d'entreprise et personnelles n'y ont donc pas leur place."}},
+  {cat:"tools", st:1, en:"DeepL",
+   t:{de:"DeepL", fr:"DeepL"},
+   f:{who:{de:"DeepL, Deutschland", fr:"DeepL, Allemagne"}, free:{de:"Ja, mit Grenzen", fr:"Oui, avec des limites"}, train:{de:"Gratis ja, bei DeepL Pro nein", fr:"Oui en version gratuite, non avec DeepL Pro"}},
+   e:{de:"Ein <strong>Übersetzungsdienst</strong> aus Köln. Er übersetzt Texte und ganze Dokumente. Mit DeepL Write verbessert er auch Formulierungen.",
+      fr:"Un <strong>service de traduction</strong> basé à Cologne. Il traduit des textes et des documents entiers. Avec DeepL Write, il améliore aussi les formulations."},
+   j:{de:"Du übersetzt die Einladung zum Firmenanlass ins Französische und lässt sie von einer Kollegin aus der Romandie gegenlesen.",
+      fr:"Vous traduisez l'invitation à l'événement d'entreprise en allemand et la faites relire par un collègue alémanique."},
+   p:{de:"Die Gratisversion darf deine Texte fürs Training nutzen. Vertrauliches übersetzt du nur mit DeepL Pro oder einem Tool deiner Firma.",
+      fr:"La version gratuite peut utiliser vos textes pour l'entraînement. Pour du confidentiel, passez par DeepL Pro ou un outil de votre entreprise."}},
+  {cat:"tools", st:1, ja:1, en:"Le Chat (Mistral)",
+   t:{de:"Le Chat (Mistral)", fr:"Le Chat (Mistral)"},
+   f:{who:{de:"Mistral AI, Frankreich", fr:"Mistral AI, France"}, free:{de:"Ja, mit Grenzen", fr:"Oui, avec des limites"}, train:{de:"Standardmässig an, abschaltbar", fr:"Activé par défaut, désactivable"}},
+   e:{de:"Der <strong>KI-Chatbot von Mistral AI</strong> aus Paris, einem der grossen KI-Anbieter Europas. Er schreibt, sucht im Web und erstellt Bilder.",
+      fr:"Le <strong>chatbot d'IA de Mistral AI</strong>, l'un des grands acteurs européens de l'IA, basé à Paris. Il rédige, cherche sur le web et crée des images."},
+   j:{de:"Du lässt dir aus ein paar Stichworten einen Entwurf für den Newsletter deines Vereins schreiben.",
+      fr:"À partir de quelques mots-clés, vous faites rédiger un premier jet de la lettre d'information de votre association."},
+   p:{de:"Auch im bezahlten Pro-Abo trainiert Mistral standardmässig mit deinen Chats. Schalte es unter Einstellungen › Datenschutz aus.",
+      fr:"Même avec l'abonnement Pro payant, Mistral entraîne ses modèles avec vos échanges par défaut. Désactivez-le dans Paramètres › Confidentialité."}},
+  {cat:"tools", st:1, en:"Apertus",
+   t:{de:"Apertus", fr:"Apertus"},
+   f:{who:{de:"ETH Zürich, EPFL und CSCS, Schweiz", fr:"EPFZ, EPFL et CSCS, Suisse"}, free:{de:"Ja, offen für alle", fr:"Oui, ouvert à tous"}, train:{de:"Hängt vom Dienst ab, der den Chat anbietet", fr:"Dépend du service qui propose le chat"}},
+   e:{de:"Das <strong>offene Sprachmodell der Schweiz</strong>. Code, Trainingsdaten und Bauplan sind öffentlich. Es kann über 1000 Sprachen, auch Schweizerdeutsch und Rätoromanisch.",
+      fr:"Le <strong>modèle de langage ouvert de la Suisse</strong>. Son code, ses données d'entraînement et sa conception sont publics. Il connaît plus de 1000 langues, dont le suisse allemand et le romanche."},
+   j:{de:"Firmen und Verwaltungen bauen eigene Tools darauf. Das Bundesgericht testet es zum Beispiel für die Analyse von Urteilen.",
+      fr:"Entreprises et administrations construisent leurs propres outils dessus. Le Tribunal fédéral le teste par exemple pour analyser des arrêts."},
+   p:{de:"Apertus ist ein Modell, kein fertiges Produkt. Ohne Anmeldung testest du es auf publicai.co/chat, betrieben von einer unabhängigen Organisation, nicht von der ETH.",
+      fr:"Apertus est un modèle, pas un produit fini. Vous pouvez l'essayer sans inscription sur publicai.co/chat, géré par une organisation indépendante et non par les EPF."}},
+  {cat:"tools", st:1, en:"Euria",
+   t:{de:"Euria", fr:"Euria"},
+   f:{who:{de:"Infomaniak, Genf", fr:"Infomaniak, Genève"}, free:{de:"Ja, ohne Konto", fr:"Oui, sans compte"}, train:{de:"Nein, laut Anbieter", fr:"Non, selon l'éditeur"}},
+   e:{de:"Der <strong>KI-Assistent von Infomaniak</strong>. Er läuft auf Servern in der Schweiz und nutzt offene Sprachmodelle. Laut Anbieter dienen deine Gespräche nicht dem Training.",
+      fr:"<strong>L'assistant IA d'Infomaniak</strong>. Il tourne sur des serveurs en Suisse et utilise des modèles de langage ouverts. Selon l'éditeur, vos échanges ne servent pas à l'entraînement."},
+   j:{de:"Du lässt eine Sprachnachricht abtippen und daraus eine kurze Aktennotiz machen.",
+      fr:"Vous faites transcrire un message vocal et en tirez une brève note de dossier."},
+   p:{de:"Server in der Schweiz heisst nicht automatisch: für Firmendaten erlaubt. Auch hier gilt die Regel deines Arbeitgebers.",
+      fr:"Serveurs en Suisse ne veut pas dire automatiquement autorisé pour les données d'entreprise. Là aussi, les règles de votre employeur s'appliquent."}},
+  {cat:"tools", st:1, ja:1, en:"Lumo",
+   t:{de:"Lumo", fr:"Lumo"},
+   f:{who:{de:"Proton, Genf", fr:"Proton, Genève"}, free:{de:"Ja, auch ohne Konto", fr:"Oui, même sans compte"}, train:{de:"Nein, laut Anbieter", fr:"Non, selon l'éditeur"}},
+   e:{de:"Der <strong>KI-Assistent von Proton</strong>, bekannt für Proton Mail. Laut Anbieter führt Lumo keine Gesprächsprotokolle und verschlüsselt deinen Verlauf.",
+      fr:"<strong>L'assistant IA de Proton</strong>, connu pour Proton Mail. Selon l'éditeur, Lumo ne conserve pas de journaux de conversation et chiffre votre historique."},
+   j:{de:"Du suchst Formulierungen für ein heikles Gespräch mit deiner Vermieterin.",
+      fr:"Vous cherchez comment formuler une discussion délicate avec votre propriétaire."},
+   p:{de:"Proton sitzt in Genf, verlegt seine Server aber grösstenteils in die EU. Achte bei Datenschutzfragen auf beides: Firmensitz und Serverstandort.",
+      fr:"Proton a son siège à Genève, mais transfère la plupart de ses serveurs dans l'UE. En matière de protection des données, regardez les deux : siège et emplacement des serveurs."}},
   /* ---------- PROMPTING ---------- */
   {cat:"prompt", top:1, en:"Prompt",
    t:{de:"Auftrag an die KI (Prompt)", fr:"Consigne à l'IA (prompt)"},
@@ -719,14 +847,6 @@ const KI_TERMS = [
       fr:"Rédiger une circulaire, créer une checklist pour le début de l'apprentissage, rassembler des idées pour la sortie d'équipe."},
    p:{de:"Gib klare Aufträge in kleinen Schritten. Ein Rundschreiben gelingt besser als „mach mir die ganze Kommunikation“.",
       fr:"Donnez des consignes claires, étape par étape. Une demande précise, comme une circulaire, donne de meilleurs résultats que «fais-moi toute la communication»."}},
-  {cat:"alltag", st:1, en:"Microsoft Copilot",
-   t:{de:"Copilot (Microsoft)", fr:"Copilot (Microsoft)"},
-   e:{de:"So heisst der <strong>KI-Assistent von Microsoft</strong>. Er steckt in Word, Outlook, Excel und Teams. Der Name passt: Die KI liest die Karte, du fährst.",
-      fr:"C'est le nom de <strong>l'assistant IA de Microsoft</strong>. Il est intégré à Word, Outlook, Excel et Teams. Le nom dit bien ce qu'il fait : l'IA lit la carte, vous conduisez."},
-   j:{de:"In Outlook: „Fass diesen Mailverlauf zusammen.“ In Excel: „Welche Filiale hatte im März den höchsten Umsatz?“",
-      fr:"Dans Outlook : «Résume cet échange d'e-mails.» Dans Excel : «Quelle filiale a fait le plus gros chiffre d'affaires en mars ?»"},
-   p:{de:"Ob du Copilot nutzen darfst und mit welchen Daten, regelt dein Arbeitgeber.",
-      fr:"C'est votre employeur qui décide si vous pouvez utiliser Copilot et avec quelles données."}},
   {cat:"alltag", st:1, en:"Free vs. Paid Plans",
    t:{de:"Gratis- oder Bezahlversion", fr:"Version gratuite ou payante"},
    e:{de:"Die Gratisversion reicht zum Ausprobieren. Bezahlversionen bieten meist <strong>stärkere Modelle, höhere Nutzungsgrenzen und zusätzliche Funktionen</strong>.",
@@ -1032,7 +1152,36 @@ const KI_IDEAS = [
    p:{de:"Prüf dieses Stelleninserat auf Formulierungen, die bestimmte Gruppen abschrecken könnten, etwa nach Alter, Geschlecht oder Herkunft. Schlag inklusivere Alternativen vor und erklär kurz, warum.", fr:"Vérifie cette annonce d'emploi : y a-t-il des formulations qui pourraient décourager certains groupes, par exemple selon l'âge, le genre ou l'origine ? Propose des alternatives plus inclusives et explique brièvement pourquoi."}}
 ];
 
+const KI_PICK = {
+  rows:[
+    {h:{de:"Texte schreiben und umformulieren", fr:"Rédiger et reformuler des textes"}, d:{de:"Das können alle Chatbots, etwa ChatGPT, Claude, Gemini, Le Chat, Euria oder Lumo.", fr:"Tous les chatbots savent le faire, par exemple ChatGPT, Claude, Gemini, Le Chat, Euria ou Lumo."}},
+    {h:{de:"Übersetzen", fr:"Traduire"}, d:{de:"DeepL oder einfach einen Chatbot fragen. Wichtige Texte von einer Person gegenlesen lassen.", fr:"DeepL, ou tout simplement un chatbot. Faites relire les textes importants par une personne."}},
+    {h:{de:"Recherchieren mit Quellen", fr:"Faire une recherche avec sources"}, d:{de:"Perplexity oder die Websuche in einem Chatbot. Die Quellen immer anklicken.", fr:"Perplexity ou la recherche web d'un chatbot. Ouvrez toujours les sources."}},
+    {h:{de:"Arbeiten in Outlook, Word und Teams", fr:"Travailler dans Outlook, Word et Teams"}, d:{de:"Microsoft Copilot über die Firmenlizenz. Arbeitet deine Firma mit Google, dann Gemini.", fr:"Microsoft Copilot via la licence de l'entreprise. Si votre entreprise travaille avec Google, Gemini."}},
+    {h:{de:"Bilder erstellen", fr:"Créer des images"}, d:{de:"Viele Chatbots haben einen Bildgenerator eingebaut, zum Beispiel ChatGPT, Gemini und Copilot.", fr:"De nombreux chatbots intègrent un générateur d'images, par exemple ChatGPT, Gemini et Copilot."}},
+    {h:{de:"Daten sollen in der Schweiz bleiben", fr:"Les données doivent rester en Suisse"}, d:{de:"Euria läuft auf Servern in der Schweiz. Für Firmendaten brauchst du trotzdem eine Freigabe.", fr:"Euria tourne sur des serveurs en Suisse. Pour les données d'entreprise, une autorisation reste nécessaire."}},
+    {h:{de:"Vertrauliches und Personendaten", fr:"Données confidentielles et personnelles"}, d:{de:"Nur in Tools, die deine Firma freigegeben hat. Mehr dazu in der Daten-Ampel.", fr:"Uniquement dans les outils validés par votre entreprise. Voir le feu tricolore des données."}},
+    {h:{de:"Gesundheit, Geld und Recht", fr:"Santé, argent et droit"}, d:{de:"Ein Chatbot kann dir Begriffe erklären. Entscheiden solltest du mit einer Fachperson.", fr:"Un chatbot peut vous expliquer des notions. Pour décider, consultez un spécialiste."}}
+  ],
+  rules:[
+    {de:"<b>Daumen hoch oder runter:</b> Damit gibst du bei mehreren Anbietern das ganze Gespräch fürs Training frei, auch wenn der Schalter aus ist.", fr:"<b>Pouce levé ou baissé :</b> chez plusieurs éditeurs, vous cédez ainsi toute la conversation pour l'entraînement, même si l'option est désactivée."},
+    {de:"<b>Nur für neue Chats:</b> Wer das Training ausschaltet, schützt künftige Gespräche. Was schon trainiert wurde, bleibt drin.", fr:"<b>Seulement pour les nouvelles conversations :</b> désactiver l'entraînement protège les échanges futurs. Ce qui a déjà servi à l'entraînement y reste."},
+    {de:"<b>Firmenkonto ist nicht Privatkonto:</b> Mit Firmenlizenzen trainieren die Anbieter in der Regel nicht mit deinen Daten. Privat musst du den Schalter selbst umlegen.", fr:"<b>Compte d'entreprise ou compte privé :</b> avec une licence d'entreprise, les éditeurs n'entraînent en général pas leurs modèles avec vos données. À titre privé, c'est à vous d'agir."}
+  ]
+};
 const KI_SOURCES = [
+  {t:{de:"OpenAI: Datenkontrollen in ChatGPT", fr:"OpenAI : contrôles des données dans ChatGPT"}, u:"https://help.openai.com/de-de/articles/7730893-data-controls-in-chatgpt"},
+  {t:{de:"Anthropic: Datenschutzeinstellungen zur Modellverbesserung", fr:"Anthropic : réglages de confidentialité pour l'amélioration des modèles"}, u:"https://privacy.claude.com/de/articles/12109829"},
+  {t:{de:"Google: Gemini-Apps-Datenschutzhinweis", fr:"Google : avis de confidentialité des applis Gemini"}, u:"https://support.google.com/gemini/answer/13594961"},
+  {t:{de:"Swisscom: WhatsApp hat jetzt eine KI-Funktion (Meta AI)", fr:"Swisscom : WhatsApp a désormais une fonction IA (Meta AI)"}, u:"https://www.swisscom.ch/de/privatkunden/blog/apps/meta-ai-ist-neu-in-whatsapp/"},
+  {t:{de:"Microsoft: Datenschutzeinstellungen für Copilot", fr:"Microsoft : réglages de confidentialité de Copilot"}, u:"https://support.microsoft.com/topic/microsoft-copilot-privacy-controls-8e479f27-6eb6-48c5-8d6a-c134062e2be6"},
+  {t:{de:"Perplexity: Data Collection at Perplexity", fr:"Perplexity : Data Collection at Perplexity"}, u:"https://intercom.help/perplexity-ai/en/articles/11564572-data-collection-at-perplexity"},
+  {t:{de:"DeepSeek: Privacy Policy", fr:"DeepSeek : Privacy Policy"}, u:"https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html"},
+  {t:{de:"DeepL: Datenschutzerklärung", fr:"DeepL : politique de confidentialité"}, u:"https://www.deepl.com/de/privacy"},
+  {t:{de:"Mistral AI: Werden meine Daten fürs Training genutzt?", fr:"Mistral AI : mes données servent-elles à l'entraînement ?"}, u:"https://help.mistral.ai/en/articles/347617-do-you-use-my-user-data-to-train-your-artificial-intelligence-models"},
+  {t:{de:"Swiss AI Initiative: Apertus", fr:"Swiss AI Initiative : Apertus"}, u:"https://www.swiss-ai.org/apertus"},
+  {t:{de:"Infomaniak: Euria, der souveräne KI-Assistent", fr:"Infomaniak : Euria, l'assistant IA souverain"}, u:"https://www.infomaniak.com/de/support/faq/1369/anleitung-euria-der-souverane-und-kostenlose-ki-assistent"},
+  {t:{de:"Proton: Lumo", fr:"Proton : Lumo"}, u:"https://lumo.proton.me/"},
   {t:{de:"EDÖB (2023): Geltendes Datenschutzgesetz ist auf KI direkt anwendbar", fr:"PFPDT (2023) : la loi sur la protection des données en vigueur s'applique directement à l'IA"}, u:"https://www.edoeb.admin.ch/edoeb/de/home/kurzmeldungen/2023/20231109_ki_dsg.html"},
   {t:{de:"Bundeskanzlei: Regulierung von KI (Zeitplan der Schweizer Arbeiten)", fr:"Chancellerie fédérale : réglementation de l'IA (calendrier des travaux suisses)"}, u:"https://www.bk.admin.ch/de/regulierung"},
   {t:{de:"Bundesamt für Justiz: Künstliche Intelligenz (Stand der Schweizer Regulierung)", fr:"Office fédéral de la justice : intelligence artificielle (état de la réglementation suisse)"}, u:"https://www.bj.admin.ch/de/kuenstliche-intelligenz"},
@@ -1113,8 +1262,9 @@ const KI_QUIZ = [
 const KI_ORDER = {
   grundlagen:["Artificial Intelligence (AI)","Algorithm","Machine Learning","Training Data","Model","Open Source and Local AI"],
   genai:["Generative AI","Large Language Model (LLM)","Chatbot","Token","Context Window","Knowledge Cutoff","AI Search","Hallucination","Jagged Frontier","Reasoning Model","Multimodal","Image Generator"],
+  tools:["ChatGPT","Claude","Gemini","Meta AI","Microsoft Copilot","Perplexity","DeepSeek","DeepL","Le Chat (Mistral)","Apertus","Euria","Lumo"],
   prompt:["Prompt","Prompt Engineering","Context","Role Prompting","Few-Shot Prompting","Chain of Thought","Iteration","Custom Instructions / Memory","Prompt Template"],
-  alltag:["AI Assistant","Microsoft Copilot","Free vs. Paid Plans","Summarization","Machine Translation","Transcription","Voice Mode","Integration","Retrieval-Augmented Generation (RAG)","AI Agent","Automation","Human in the Loop"],
+  alltag:["AI Assistant","Free vs. Paid Plans","Summarization","Machine Translation","Transcription","Voice Mode","Integration","Retrieval-Augmented Generation (RAG)","AI Agent","Automation","Human in the Loop"],
   sicher:["Data Protection","Enterprise vs. Consumer","Shadow AI","Fact-Checking","AI-Powered Phishing","Deepfake","Prompt Injection","AI Detector"],
   recht:["AI Policy","Transparency / Disclosure","Copyright","Bias","AI Regulation in Switzerland","EU Artificial Intelligence Act","Energy and Environmental Impact"],
   zukunft:["AI Literacy","Learning with AI","AI Sparring Partner","Task Exposure","Productivity Gains","Human Skills","AI Champion"]
@@ -2121,7 +2271,7 @@ const CYB_UI = {
 
 /* ================= THEMEN-REGISTER / REGISTRE DES THÈMES ================= */
 const SETS = {
-  ki:{label:{de:"KI", fr:"IA"}, cats:KI_CATS, terms:KI_TERMS, order:KI_ORDER, myths:KI_MYTHS, quiz:KI_QUIZ, ampel:KI_AMPEL, ideas:KI_IDEAS, sources:KI_SOURCES,
+  ki:{label:{de:"KI", fr:"IA"}, cats:KI_CATS, terms:KI_TERMS, order:KI_ORDER, myths:KI_MYTHS, quiz:KI_QUIZ, ampel:KI_AMPEL, pick:KI_PICK, ideas:KI_IDEAS, sources:KI_SOURCES,
       refs:[{id:"algorithm", cat:"grundlagen"}, {id:"data-protection", cat:"sicher"}], ui:{}},
   internet:{label:{de:"Internet", fr:"Internet"}, cats:INET_CATS, terms:INET_TERMS, order:INET_ORDER, myths:INET_MYTHS, quiz:INET_QUIZ, url:INET_URL, sources:INET_SOURCES, refs:[], ui:INET_UI},
   cyber:{label:{de:"Cybersicherheit", fr:"Cybersécurité"}, cats:CYB_CATS, terms:CYB_TERMS, order:CYB_ORDER, myths:CYB_MYTHS, quiz:CYB_QUIZ, sos:CYB_SOS, sources:CYB_SOURCES,
@@ -2130,16 +2280,16 @@ const SETS = {
 const isTopic = k => typeof k==="string" && Object.prototype.hasOwnProperty.call(SETS, k);
 let topic = "ki";
 try{ const h = location.hash.slice(1); const st = localStorage.getItem("ki-glossar-topic"); if(isTopic(h)) topic = h; else if(isTopic(st)) topic = st; }catch(_){}
-let UI, CATS, TERMS, ORDER, MYTHS, QUIZ, AMPEL, TOPICS, SOURCES, REFS, URLX, SOS;
+let UI, CATS, TERMS, ORDER, MYTHS, QUIZ, AMPEL, PICK, TOPICS, SOURCES, REFS, URLX, SOS;
 function useTopic(k){
   const S = SETS[k];
   UI = Object.assign({}, UI_BASE, S.ui);
   CATS = S.cats; TERMS = S.terms; ORDER = S.order; MYTHS = S.myths; QUIZ = S.quiz;
-  AMPEL = S.ampel || []; TOPICS = S.ideas || []; SOURCES = S.sources; REFS = S.refs || []; URLX = S.url || null; SOS = S.sos || null;
+  AMPEL = S.ampel || []; PICK = S.pick || null; TOPICS = S.ideas || []; SOURCES = S.sources; REFS = S.refs || []; URLX = S.url || null; SOS = S.sos || null;
   if(!S.ui.bTopics && !TOPICS.length) UI.bTopics = null;
 }
 useTopic(topic);
-const EXTRAS = () => ["mythen","quiz", ...(AMPEL.length?["ampel"]:[]), ...(TOPICS.length?["themen"]:[]), ...(URLX?["adresse"]:[]), ...(SOS?["notfall"]:[]), "quellen"];
+const EXTRAS = () => ["mythen","quiz", ...(PICK?["wofuer"]:[]), ...(AMPEL.length?["ampel"]:[]), ...(TOPICS.length?["themen"]:[]), ...(URLX?["adresse"]:[]), ...(SOS?["notfall"]:[]), "quellen"];
 
 let order = "lern";
 try{ if(localStorage.getItem("ki-glossar-order")==="az") order = "az"; }catch(_){}
@@ -2175,9 +2325,10 @@ const IC = {
 
 /* Querverweise: welche Wörter auf welchen Begriff zeigen */
 const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const ftext = x => x.f ? Object.values(x.f).map(v=>v.de+" "+v.fr).join(" ") : "";
 const ALL = [];
 Object.entries(SETS).forEach(([k,S])=>S.terms.forEach(x=>{ x.id = slug(x.en); x.topic = k;
-  x.s = strip([x.t.de,x.t.fr,x.en,x.e.de,x.e.fr,x.j.de,x.j.fr,x.p?x.p.de+" "+x.p.fr:""].join(" ")).toLowerCase(); ALL.push(x); }));
+  x.s = strip([x.t.de,x.t.fr,x.en,x.e.de,x.e.fr,x.j.de,x.j.fr,x.p?x.p.de+" "+x.p.fr:"",ftext(x)].join(" ")).toLowerCase(); ALL.push(x); }));
 const tlabel = (k, lg) => SETS[k].label[lg==="fr"?"fr":"de"];
 const XREF = {
   "Large Language Model (LLM)": {de:["Sprachmodell","LLM"], fr:["LLM"]},
@@ -2192,6 +2343,17 @@ const XREF = {
   "Model": {de:["Modell"], fr:["modèle"]},
   "EU Artificial Intelligence Act": {de:["EU AI Act"], fr:["AI Act"]},
   "Microsoft Copilot": {de:["Copilot"], fr:["Copilot"]},
+  "ChatGPT": {de:["ChatGPT"], fr:["ChatGPT"]},
+  "Claude": {de:["Claude"], fr:["Claude"]},
+  "Gemini": {de:["Gemini"], fr:["Gemini"]},
+  "Meta AI": {de:["Meta AI"], fr:["Meta AI"]},
+  "Perplexity": {de:["Perplexity"], fr:["Perplexity"]},
+  "DeepSeek": {de:["DeepSeek"], fr:["DeepSeek"]},
+  "DeepL": {de:["DeepL"], fr:["DeepL"]},
+  "Le Chat (Mistral)": {de:["Le Chat","Mistral"], fr:["Le Chat","Mistral"]},
+  "Apertus": {de:["Apertus"], fr:["Apertus"]},
+  "Euria": {de:["Euria"], fr:["Euria"]},
+  "Lumo": {de:["Lumo"], fr:["Lumo"]},
   "Reasoning Model": {de:["Denkmodus"], fr:["mode réflexion"]},
   "AI Policy": {de:["Richtlinie"], fr:["directive"]},
   "AI Literacy": {de:["KI-Kompetenz"], fr:["compétences en IA"]},
@@ -2273,11 +2435,12 @@ function card(x){
   const half = lg => { const used = new Set(); const lk = s => linkify(one(s,lg), lg, x.id, used); return `
     <div class="half" lang="${lg}">
       <div>${mode==="both"?`<span class="lg">${lg.toUpperCase()}</span>`:""}<h3>${ttl(one(x.t,lg))}</h3>${mode!=="both"?`<div class="en" lang="en">${x.en}</div>`:""}</div>
+      ${x.f?`<dl class="facts"><dt>${one(UI.fWho,lg)}</dt><dd>${one(x.f.who,lg)}</dd><dt>${one(UI.fFree,lg)}</dt><dd>${one(x.f.free,lg)}</dd><dt>${one(UI.fTrain,lg)}</dt><dd>${one(x.f.train,lg)}</dd></dl>`:""}
       <p class="eli5"><span class="ic">${IC.key}</span><span>${lk(x.e)}</span></p>
       <p class="job"><b>${x.ja?IC.home:IC.bag} ${one(x.ja?UI.alltag:UI.job,lg)}</b>${lk(x.j)}</p>
       ${x.p?`<p class="tip">${IC.bulb}<span>${lk(x.p)}</span></p>`:""}
     </div>`; };
-  const search = strip([x.t.de,x.t.fr,x.en,x.e.de,x.e.fr,x.j.de,x.j.fr,x.p?x.p.de+" "+x.p.fr:""].join(" ")).toLowerCase();
+  const search = x.s;
   return `<article class="card" id="t-${x.id}" data-top="${x.top?1:0}" data-search="${esc(search)}">${x.top?'<span class="topbadge">Top 10</span>':""}
     ${mode==="both"?`<div class="en-top">EN · <span lang="en">${x.en}</span></div>`:""}
     <div class="halves">${langs.map(half).join("")}</div>
@@ -2338,6 +2501,11 @@ function renderMain(){
       <div class="qfb" hidden></div></li>`).join("")}</ol>`; }).join("")}
     <div class="qscore"><span id="qscore">0 / ${QUIZ.length} ${L(UI.score)}</span><button type="button" class="qreset">${L(UI.again)}</button></div>
   </section>`;
+  if(PICK) h += `<section class="cat" id="wofuer">
+    <div class="cat-head"><span class="num">${L(UI.pickNum)}</span><h2>${L(UI.pickH)}</h2><div class="desc">${L(UI.pickP)}</div></div>
+    <div class="pick">${PICK.rows.map(r=>`<div class="prow"><h3>${L(r.h)}</h3><p>${L(r.d)}</p></div>`).join("")}</div>
+    <div class="pickrules"><h3>${L(UI.pickRules)}</h3><ul>${PICK.rules.map(r=>`<li>${L(r)}</li>`).join("")}</ul></div>
+  </section>`;
   if(AMPEL.length) h += `<section class="cat" id="ampel">
     <div class="cat-head"><span class="num">${L(UI.ampelNum)}</span><h2>${L(UI.ampelH)}</h2><div class="desc">${L(UI.ampelP)}</div></div>
     <div class="ampel">${AMPEL.map(a=>`<div class="light ${a.cls}"><div class="dot"></div><h3>${L(a.h)}</h3><ul>${a.items.map(i=>`<li>${L(i)}</li>`).join("")}</ul></div>`).join("")}</div>
@@ -2374,7 +2542,7 @@ function renderMain(){
   document.getElementById("foot").innerHTML = `<p>${L(UI.foot)}</p><p class="privacy">${L(UI.privacy)}</p><p class="privacy">${L(UI.rights)}</p>`;
 }
 
-const XNAME = {mythen:"mythChip", quiz:"quizChip", ampel:"ampelChip", themen:"topChip", adresse:"urlChip", notfall:"sosChip", quellen:"srcH"};
+const XNAME = {mythen:"mythChip", quiz:"quizChip", wofuer:"pickChip", ampel:"ampelChip", themen:"topChip", adresse:"urlChip", notfall:"sosChip", quellen:"srcH"};
 const NAV = () => [{id:"all",name:UI.all}, {id:"top",name:UI.topTen}, ...CATS, ...EXTRAS().map(id=>({id, name:UI[XNAME[id]]}))];
 const NARROW = matchMedia("(max-width:600px)");
 function renderNav(){
