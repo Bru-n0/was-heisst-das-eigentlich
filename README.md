@@ -11,6 +11,7 @@ Nur diese Fassung wird gepflegt und regelmässig geprüft. Kopien an anderen Adr
 - 153 Begriffe in drei Themen, jeweils mit Erklärung, Beispiel aus Job oder Alltag und Tipp, darunter 12 bekannte KI-Tools mit Steckbrief
 - Mythen, Selbsttest, Daten-Ampel, Spickzettel «Welches Tool wofür?», Spickzettel zum Lesen von Webadressen und Notfallkarte
 - Links auf einzelne Begriffe, zum Beispiel `#cyber/phishing`, und auf Suchen, zum Beispiel `?q=gehackt`
+- Offline nutzbar und als App installierbar (Startbildschirm), nach dem ersten Besuch auch ohne Internet
 - Eine einzelne HTML-Datei ohne externe Abhängigkeiten, ohne Tracking und ohne Datenspeicherung
 
 ## Hinweise
@@ -34,6 +35,6 @@ Glossaire en langage simple sur l'**IA**, **Internet** et la **cybersécurité**
 
 Seule cette version est tenue à jour et vérifiée régulièrement. Les copies hébergées ailleurs ne sont pas autorisées et peuvent contenir des informations obsolètes ou modifiées, par exemple de faux services de signalement.
 
-Le site est volontairement exclu des moteurs de recherche (`noindex`). Il se partage par lien direct et par code QR.
+Le site est volontairement exclu des moteurs de recherche (`noindex`). Il se partage par lien direct et par code QR. Après une première visite, il fonctionne aussi hors ligne et peut être ajouté à l'écran d'accueil.
 
 © 2026 Bru-n0. Tous droits réservés.

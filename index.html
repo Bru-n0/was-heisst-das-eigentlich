@@ -2,7 +2,7 @@
 <html lang="de" class="nojs">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-xKh9RyE8RyTQfMPzTxW52R5amPhD9Uvgdb/yz/CSEaQ='; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-V0csgKls0AwZUodxQSxwH4BFm2XFx0Eun6g76uW398s='; style-src 'unsafe-inline'; img-src 'self' data:; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
@@ -23,6 +23,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADLUlEQVR4AcSWW0gUURjH/zNbupuXdTV310saIglaWFq0EYaIGfZQGEQXoRs9hFA+RUhgqW8ZUREUktiTRRciAk3JBylKo2S7EdqFwrRdt1SWNN11dzrfaOMsrDozuXqYb+ab75zz//3n7M6Fh6zFsGa1JlZZLIktLJxWa5IwH0FaLFqsTJshYmRISAbi463F4eER7wGukuO4IhZmzFMjLRZFYNrEIBammmjAbE7YptPpmjgOiVP1kB2IQax/Jnij0WjiOL4hZMQZhHledz06OjmW1+uXHWSuEmYYF7IyYyYaDL4D7CfgbCGjzCnM2XjmZNEMEJtWIHVOo7IBGbkxqGjYgBtvi9DYUyzGlSf5OHwmE9FxYbKRSlIulRlQMnByzNGaLFQ22rBm83KEhesmi2wfazFga2kqzjXlYX2hurtXsYEtu5JQsCcFHMcxZPAt2hSGstpsVSuh2EDezqQA6kf7MOor3+Hm+W4IgiD16SOWIKdA+SooNmBeYZAg7iEPako70HarFw/rvqDzkUPqo8QiG0vns4ViA+UF7di/qlmMYxvbMOGdvmqTRR/AGHSOBZzPdqLYQDARQ6QOJy6tRUaOSer2jE2gszlwRaTOIIlmA/HJelTd3gRb8fRDlOBXT72Be9AbBBW8pNlA+eUcJKdHSaojbi8uHrezq3dKNSWJJgMrs6KQttoo6bu+j6Jix1PY211STWmiyYA1NSJAv7G2Gz/7lf/x5JM1GZjw+PHp9ZAUH14MyjVV5ZoMvHw8gMrdHVK4f3lUQeWDNRnItMWh+o4N9V2FOFmXiwjjUrmmqlyTgZKyNKRnm2CIXIp1+WYU7ktRBZUP1mQg3DD9JiSxBV+B9nt9xBXjz28v2u/2irmWnaYVoJfQ2b3PcaHsFU6XPEPf5xEtbHEOz16l6h5d4jSgp2sYdDc4vo1OVdQfiE3fhHb1U+dnBvu2sfN+PxbNALF5nvdfYx80w1jgRkxi8w6H46sg+I8sMJ/hhEPEFu+CgYEf930+33bmqp/1hHQjBrGczv4HBBINUOJyOZrHx0eyAKFaEIRWFgNU/9+g+aTFopW0iUEsqlP8BQAA//+VQ762AAAABklEQVQDAGIrE/4ov2NuAAAAAElFTkSuQmCC">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Was heisst das?">
 <title>Was heisst das eigentlich? · Ça veut dire quoi, au juste ?</title>
 <script>document.documentElement.className='js';try{var t=localStorage.getItem('ki-glossar-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
 <style>
@@ -269,6 +271,13 @@
   .opt.wrong{border-color:#d8443a;background:var(--r-bg);color:var(--r-tx)}
   .qfb{margin-top:10px;font-size:15px}
   .qq.ok .qfb b{color:var(--g-tx)} .qq.ko .qfb b{color:var(--r-tx)}
+  .qnav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .qnav button{border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 16px;font:inherit;font-size:14.5px;font-weight:600;cursor:pointer}
+  .qnav .qnext{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .qnav button:disabled{color:var(--muted);border-color:var(--line);background:var(--soft);cursor:default}
+  .qpos{font-size:14px;color:var(--muted);font-weight:600}
+  .qpos .frsub{display:inline;margin:0} .qpos .frsub::before{content:" / "}
+  .qnav button .frsub{display:inline;margin:0;color:inherit} .qnav button .frsub::before{content:" / "}
   .qscore{display:flex;align-items:center;gap:14px;margin-top:18px;font-weight:700;font-size:18px}
   .qreset{border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
   .expandall{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);margin-top:4px;cursor:pointer}
@@ -382,6 +391,7 @@
     .urlbox{padding:16px}
     .urlex li{padding:10px}
     .soscard{padding:16px 14px 12px}
+    .qpos{order:-1;flex-basis:100%}
     .facts{grid-template-columns:1fr;gap:0} .facts dd{margin-bottom:6px} .facts dd:last-child{margin-bottom:0}
     #xtip{max-width:calc(100vw - 24px)}
   }
@@ -502,6 +512,9 @@ const UI_BASE = {
   quizP:{de:"12 Fragen, je vier pro Lernziel. Klick auf eine Antwort, du siehst sofort, ob sie stimmt.", fr:"12 questions, quatre par objectif. Cliquez sur une réponse, vous voyez tout de suite si elle est juste."},
   goalShort:[{de:"Begriffe erklären", fr:"Expliquer les termes"},{de:"KI sicher einsetzen", fr:"Utiliser l'IA en sécurité"},{de:"Antworten prüfen", fr:"Vérifier les réponses"}],
   goalN:{de:"Lernziel", fr:"Objectif"},
+  qPrev:{de:"Zurück", fr:"Précédente"},
+  qNext:{de:"Nächste Frage", fr:"Question suivante"},
+  qPos:{de:"Frage {i} von {n}", fr:"Question {i} sur {n}"},
   topNextP:{de:"Du kennst jetzt die 10 wichtigsten Begriffe.", fr:"Vous connaissez maintenant les 10 termes essentiels."},
   topNextB:{de:"Jetzt testen →", fr:"Se tester maintenant →"},
   view:{de:"Ansicht anpassen", fr:"Personnaliser l'affichage"},
@@ -2762,9 +2775,10 @@ function renderMain(){
   h += `<section class="cat" id="quiz">
     <div class="cat-head"><span class="num">${L(UI.quizNum)}</span><h2>${L(UI.quizH)}</h2><div class="desc">${L(UI.quizP)}</div></div>
     ${UI.goalShort.map((gs,gi)=>{ const start = QUIZ.findIndex(q=>q.g===gi)+1; return `<h3 class="qgoal">${L({de:`${UI.goalN.de} ${gi+1}: ${gs.de}`, fr:`${UI.goalN.fr} ${gi+1} : ${gs.fr.charAt(0).toLowerCase()+gs.fr.slice(1)}`})}</h3>
-    <ol class="quiz" start="${start}">${QUIZ.map((q,i)=> q.g!==gi ? "" : `<li class="qq" data-i="${i}"><div class="qtext">${L(q.q)}</div>
+    <ol class="quiz" start="${start}">${QUIZ.map((q,i)=> q.g!==gi ? "" : `<li class="qq" data-i="${i}" value="${i+1}"><div class="qtext">${L(q.q)}</div>
       <div class="opts">${q.o.map((o,k)=>`<button type="button" class="opt" data-k="${k}">${L(o)}</button>`).join("")}</div>
       <div class="qfb" hidden></div></li>`).join("")}</ol>`; }).join("")}
+    <div class="qnav"><button type="button" class="qprev">← ${L(UI.qPrev)}</button><span class="qpos" id="qpos"></span><button type="button" class="qnext">${L(UI.qNext)} →</button></div>
     <div class="qscore"><span id="qscore">0 / ${QUIZ.length} ${L(UI.score)}</span><button type="button" class="qreset">${L(UI.again)}</button></div>
   </section>`;
   const langs = mode==="both" ? ["de","fr"] : [mode];
@@ -2780,6 +2794,7 @@ function renderMain(){
     <ol class="sources">${SOURCES.map(q=>`<li><a href="${q.u}" target="_blank" rel="noopener">${L(q.t)}</a></li>`).join("")}</ol>
   </section>`;
   document.getElementById("main").innerHTML = h;
+  quizScore = 0; showQ(0);
   document.getElementById("foot").innerHTML = `<p>${L(UI.foot)}</p><p class="privacy">${L(UI.privacy)}</p><p class="privacy">${L(UI.rights)}</p>`;
 }
 
@@ -2938,7 +2953,20 @@ document.addEventListener("change", e=>{
   try{ localStorage.setItem("ki-glossar-expand", expandAll?"1":"0"); }catch(_){}
   document.body.classList.toggle("expand", expandAll);
 });
-let quizScore = 0;
+let quizScore = 0, quizIdx = 0;
+function showQ(i, focus){
+  const items = [...document.querySelectorAll("#quiz .qq")]; if(!items.length) return;
+  quizIdx = Math.max(0, Math.min(i, items.length-1));
+  items.forEach((li,k)=>{ li.hidden = k!==quizIdx; });
+  document.querySelectorAll("#quiz ol.quiz").forEach(ol=>{ const on = [...ol.children].some(li=>!li.hidden); ol.hidden = !on; if(ol.previousElementSibling) ol.previousElementSibling.hidden = !on; });
+  const pos = l => one(UI.qPos,l).replace("{i}", quizIdx+1).replace("{n}", items.length);
+  document.getElementById("qpos").innerHTML = mode==="both" ? `${pos("de")}<span class="frsub" lang="fr">${pos("fr")}</span>` : pos(mode);
+  document.querySelector("#quiz .qprev").disabled = quizIdx===0;
+  document.querySelector("#quiz .qnext").disabled = quizIdx===items.length-1;
+  if(focus){ const cur = items[quizIdx]; const bar = document.querySelector(".toolbar").offsetHeight; const head = cur.closest("ol").previousElementSibling || cur;
+    const top = head.getBoundingClientRect().top; if(top < bar + 8 || top > window.innerHeight*0.5) window.scrollTo({top: top + window.scrollY - bar - 16, behavior:"instant"});
+    const qt = cur.querySelector(".qtext"); qt.tabIndex = -1; qt.focus({preventScroll:true}); }
+}
 document.addEventListener("click", e=>{
   const tb = e.target.closest(".topicbtn");
   if(tb){ if(tb.dataset.topic!==topic) setTopic(tb.dataset.topic); return; }
@@ -2965,7 +2993,9 @@ document.addEventListener("click", e=>{
     document.getElementById("qscore").innerHTML = `${quizScore} / ${QUIZ.length} ${L(UI.score)}`;
     { const lg = mode==="fr" ? "fr" : "de"; say(`${one(ok?UI.right:UI.wrong,lg)} ${strip(one(q.x,lg))} ${quizScore} / ${QUIZ.length} ${one(UI.score,lg)}.`); }
     return; }
-  if(e.target.closest(".qreset")){ quizScore = 0; const y = window.scrollY; renderMain(); apply(); window.scrollTo(0,y); return; }
+  if(e.target.closest(".qreset")){ const y = window.scrollY; renderMain(); apply(); window.scrollTo(0,y); showQ(0, true); return; }
+  if(e.target.closest(".qnext")){ showQ(quizIdx+1, true); return; }
+  if(e.target.closest(".qprev")){ showQ(quizIdx-1, true); return; }
   const mb = e.target.closest(".morebtn");
   if(mb){ const c = mb.closest(".card"); const open = c.classList.toggle("open"); mb.setAttribute("aria-expanded", open);
     const lab = p => mode==="both" ? p.de+" / "+nb(p.fr) : one(p, mode);
@@ -3051,6 +3081,7 @@ window.addEventListener("resize", ()=>{ if(!SG.hidden) placeSugg(); });
 NARROW.addEventListener?.("change", ()=>{ const y = window.scrollY; renderMain(); renderNav(); apply(); window.scrollTo(0, y); });
 window.addEventListener("hashchange", ()=>{ const [h, hid] = location.hash.slice(1).split("/"); if(hid && BYID[hid]) goTo(hid); else if(isTopic(h) && h!==topic) setTopic(h); });
 renderAll(); paintThemeBtn();
+if("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register("sw.js").catch(()=>{});
 if(pendingId && BYID[pendingId]) setTimeout(()=>goTo(pendingId), 60);
 else { try{ const q0 = new URLSearchParams(location.search).get("q"); if(q0){ document.getElementById("q").value = q0.slice(0,80); apply(); setTimeout(revealResults, 60); } }catch(_){} }
 </script>
