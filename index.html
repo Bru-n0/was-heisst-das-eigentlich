@@ -2,7 +2,7 @@
 <html lang="de" class="nojs">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-V0csgKls0AwZUodxQSxwH4BFm2XFx0Eun6g76uW398s='; style-src 'unsafe-inline'; img-src 'self' data:; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-4RN17ZkSJTGM7lWbvTgZq4903Ppl95IfhNm8ILYHJls='; style-src 'unsafe-inline'; img-src 'self' data:; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
@@ -111,8 +111,8 @@
   .urlex li.ko .mark{background:var(--r-bg);color:var(--r-tx);border:1px solid var(--r-bd)}
   .urlex li.ok{border-color:var(--g-bd)}
   .urlex li.ko mark{background:var(--r-bg);color:var(--r-tx);box-shadow:inset 0 0 0 1px var(--r-bd)}
-  .facts{display:grid;grid-template-columns:max-content 1fr;gap:3px 12px;margin:10px 0 12px;padding:10px 12px;border-radius:10px;background:var(--soft);font-size:13.5px;line-height:1.4}
-  .facts dt{font-weight:600;color:var(--muted)} .facts dd{margin:0}
+  .facts{display:flex;flex-wrap:wrap;gap:2px 16px;margin:8px 0 10px;padding:7px 11px;border-radius:9px;background:var(--soft);font-size:13.5px;line-height:1.45}
+  .facts div{display:inline} .facts dt{display:inline;font-weight:600;color:var(--muted)} .facts dt::after{content:": "} .facts dd{display:inline;margin:0}
   .pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
   .prow{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:14px 16px}
   .prow h3{margin:0 0 6px;font-size:16px;line-height:1.3} .prow p{margin:0;font-size:15px}
@@ -161,6 +161,9 @@
   .search{flex:1 1 260px;position:relative}
   .search input{width:100%;padding:11px 16px 11px 42px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);font:inherit;font-size:16px;color:var(--ink)}
   .search input:focus{outline:2px solid var(--focus);outline-offset:1px;border-color:transparent}
+  .toolbar{transition:transform .22s ease}
+  body.tbhide .toolbar{transform:translateY(-100%)}
+  mark.hit{background:var(--accent-soft);color:inherit;border-radius:3px;padding:0 1px;box-shadow:0 0 0 1px var(--focus) inset}
   .sugg{position:absolute;top:calc(100% - 4px);z-index:30;margin:0;padding:6px;list-style:none;background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;box-shadow:0 12px 28px rgba(0,0,0,.18)}
   .sugg[hidden]{display:none}
   .sugg li{display:flex;flex-direction:column;gap:1px;padding:9px 12px;border-radius:8px;cursor:pointer;line-height:1.3}
@@ -392,9 +395,10 @@
     .urlex li{padding:10px}
     .soscard{padding:16px 14px 12px}
     .qpos{order:-1;flex-basis:100%}
-    .facts{grid-template-columns:1fr;gap:0} .facts dd{margin-bottom:6px} .facts dd:last-child{margin-bottom:0}
+    .facts{gap:1px 12px}
     #xtip{max-width:calc(100vw - 24px)}
   }
+  @media (prefers-reduced-motion:reduce){ .toolbar{transition:none} }
   @media print{
     :root{--bg:#fff;--surface:#fff;--ink:#111;--muted:#444;--line:#ccc;--soft:#f3f3f3;--prompt:#f3f3f3;--prompt-ink:#111;--fr:#3d4d63}
     .toolbar,.copy,.toc,.themebtn,#xtip,.linkbtn{display:none!important}
@@ -471,7 +475,7 @@ const UI_BASE = {
           fr:"Avant de copier quelque chose dans un outil d'IA, demandez-vous : serait-ce grave si cela devenait public ? En cas de doute, ce sont toujours les règles de votre employeur qui s'appliquent."},
   fWho:{de:"Anbieter", fr:"Éditeur"},
   fFree:{de:"Gratis", fr:"Gratuit"},
-  fTrain:{de:"Training mit deinen Chats", fr:"Entraînement à partir de vos échanges"},
+  fTrain:{de:"Training mit deinen Chats", fr:"Entraînement sur vos échanges"},
   pickNum:{de:"Spickzettel", fr:"Aide-mémoire"},
   pickChip:{de:"Welches Tool wofür?", fr:"Quel outil pour quoi ?"},
   pickH:{de:"Welches Tool wofür?", fr:"Quel outil pour quelle tâche ?"},
@@ -2675,7 +2679,7 @@ function card(x){
   const half = lg => { const used = new Set(); const lk = s => linkify(one(s,lg), lg, x.id, used); return `
     <div class="half" lang="${lg}">
       <div>${mode==="both"?`<span class="lg">${lg.toUpperCase()}</span>`:""}<h3>${ttl(one(x.t,lg))}</h3>${mode!=="both"?`<div class="en" lang="en">${x.en}</div>`:""}</div>
-      ${x.f?`<dl class="facts"><dt>${one(UI.fWho,lg)}</dt><dd>${one(x.f.who,lg)}</dd><dt>${one(UI.fFree,lg)}</dt><dd>${one(x.f.free,lg)}</dd><dt>${one(UI.fTrain,lg)}</dt><dd>${one(x.f.train,lg)}</dd></dl>`:""}
+      ${x.f?`<dl class="facts"><div><dt>${one(UI.fWho,lg)}</dt><dd>${one(x.f.who,lg)}</dd></div><div><dt>${one(UI.fFree,lg)}</dt><dd>${one(x.f.free,lg)}</dd></div><div><dt>${one(UI.fTrain,lg)}</dt><dd>${one(x.f.train,lg)}</dd></div></dl>`:""}
       <p class="eli5"><span class="ic">${IC.key}</span><span>${lk(x.e)}</span></p>
       <p class="job"><b>${x.ja?IC.home:IC.bag} ${one(x.ja?UI.alltag:UI.job,lg)}</b>${lk(x.j)}</p>
       ${x.p?`<p class="tip">${IC.bulb}<span>${lk(x.p)}</span></p>`:""}
@@ -2857,6 +2861,7 @@ function apply(){
    + other.map(o=>{ const t = lg => one(UI.also,lg).replace("{t}", tlabel(o.k,lg)).replace("{n}", o.n);
     return `<button type="button" class="elsebtn" data-topic="${o.k}">${mode==="both" ? t("de")+" / "+t("fr") : t(mode)} →</button>`; }).join("");
   document.getElementById("empty").style.display = (total===0 && !extra) ? "block" : "none";
+  if(typeof markHits==="function") markHits(term);
   if(term){ const lg = mode==="fr" ? "fr" : "de"; const extraTxt = secs.map(id=>one(UI.seeSec,lg).replace("{t}", strip(one(UI[XNAME[id]], lg)))).concat(other.map(o=>one(UI.also,lg).replace("{t}", tlabel(o.k,lg)).replace("{n}", o.n))).join(". ");
     say(total ? `${total} ${one(UI.hits,lg)}${extraTxt ? ". "+extraTxt : ""}` : strip(one(UI.empty,lg)) + (extraTxt ? " "+extraTxt : ""), 600); }
 }
@@ -2904,7 +2909,7 @@ document.addEventListener("keydown", e=>{ if(e.key==="Escape" && tip.classList.c
 document.addEventListener("focusin", e=>{ const a = e.target.closest("a.xref"); if(a) showTip(a); else hideTip(); });
 function goTo(id){
   hideTip();
-  document.getElementById("q").value = "";
+  document.getElementById("q").value = ""; if(typeof clearHits==="function") clearHits();
   const x = ALL.find(t=>t.id===id); if(!x) return;
   if(x.topic!==topic) setTopic(x.topic, true); else select("all", false);
   try{ history.replaceState(null, "", location.pathname+"#"+x.topic+"/"+id); }catch(_){}
@@ -3030,6 +3035,48 @@ document.getElementById("q").addEventListener("input", ()=>{
   spy(); suggest();
   try{ history.replaceState(null, "", location.pathname+(v ? "?q="+encodeURIComponent(v) : "")+"#"+topic); }catch(_){}
 });
+
+/* Leiste oben: beim Herunterscrollen ausblenden, beim Hochscrollen zeigen (bis 860 px) */
+const TBMQ = matchMedia("(max-width:860px)");
+let tbLastY = window.scrollY, tbLock = 0;
+const showBar = () => document.body.classList.remove("tbhide");
+{ const st = window.scrollTo.bind(window); window.scrollTo = (...a) => { tbLock = Date.now() + 1000; showBar(); st(...a); }; }
+window.addEventListener("scroll", ()=>{
+  const y = window.scrollY, dy = y - tbLastY;
+  if(Date.now() < tbLock) tbLock = Math.max(tbLock, Date.now() + 160);
+  if(!TBMQ.matches || Date.now() < tbLock || document.activeElement === document.getElementById("q") || y < 240){ showBar(); tbLastY = y; return; }
+  if(dy > 8){ document.body.classList.add("tbhide"); tbLastY = y; }
+  else if(dy < -8){ showBar(); tbLastY = y; }
+}, {passive:true});
+document.addEventListener("focusin", e=>{ if(e.target.closest && e.target.closest(".toolbar")) showBar(); });
+
+/* Suchwörter in den Karten markieren */
+const lightCh = ch => ch.toLowerCase().replace(/œ/g,"oe").replace(/æ/g,"ae").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/ß/g,"ss");
+function clearHits(){ document.querySelectorAll("#glossary mark.hit").forEach(m=>{ const par = m.parentNode; par.replaceChild(document.createTextNode(m.textContent), m); par.normalize(); }); }
+function markHits(term){
+  clearHits();
+  const words = [...new Set(lightCh(term).replace(/[-‑–]/g," ").split(/[^a-z0-9]+/).filter(w=>w.length>=3 && !STOP.has(w)))];
+  if(!words.length) return;
+  document.querySelectorAll("#glossary .card").forEach(card=>{
+    if(card.style.display==="none") return;
+    const tw = document.createTreeWalker(card, NodeFilter.SHOW_TEXT, {acceptNode: n => n.parentElement.closest("button,.en,.en-top,.reftag,.stand,.topbadge,mark") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT});
+    const nodes = []; while(tw.nextNode()) nodes.push(tw.currentNode);
+    nodes.forEach(node=>{
+      const t = node.nodeValue; let ns = "", map = [];
+      for(let i=0;i<t.length;i++){ const n = lightCh(t[i]); for(let k=0;k<n.length;k++){ ns += n[k]; map.push(i); } }
+      let ranges = [];
+      words.forEach(w=>{ let needle = ns.includes(w) ? w : (stemOf(w) && ns.includes(stemOf(w)) ? stemOf(w) : null); if(!needle) return;
+        let at = ns.indexOf(needle); while(at>=0){ ranges.push([map[at], map[at+needle.length-1]+1]); at = ns.indexOf(needle, at+needle.length); } });
+      if(!ranges.length) return;
+      ranges.sort((a,b)=>a[0]-b[0]); const merged = [];
+      ranges.forEach(r=>{ const last = merged[merged.length-1]; if(last && r[0]<=last[1]) last[1] = Math.max(last[1], r[1]); else merged.push(r.slice()); });
+      const frag = document.createDocumentFragment(); let pos = 0;
+      merged.forEach(([a,b])=>{ if(a>pos) frag.appendChild(document.createTextNode(t.slice(pos,a))); const m = document.createElement("mark"); m.className = "hit"; m.textContent = t.slice(a,b); frag.appendChild(m); pos = b; });
+      if(pos<t.length) frag.appendChild(document.createTextNode(t.slice(pos)));
+      node.parentNode.replaceChild(frag, node);
+    });
+  });
+}
 
 /* Vorschläge beim Tippen (Combobox) */
 const QI = document.getElementById("q"), SG = document.getElementById("sugg");
