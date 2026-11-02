@@ -2,7 +2,7 @@
 <html lang="de" class="nojs">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-SAUPHhKP2mNMwk5NCtm+1FHW6HlHjahqD3QYZxlMjAQ='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-+pMFfv433UXLI0goyh058uVNxtK+hKD4HX7DCJfKr6Y='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Was heisst das eigentlich? · Ça veut dire quoi, au juste ?</title>
@@ -186,7 +186,7 @@
   .cat-head .desc{flex-basis:100%;margin:2px 0 0;color:var(--muted)}
   .count{font-size:14px;color:var(--muted)}
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px}
   body.both .grid{grid-template-columns:1fr}
   .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px 18px;scroll-margin-top:120px;transition:border-color .15s,box-shadow .3s}
   .card:hover{border-color:var(--line-strong)}
@@ -207,6 +207,7 @@
   .view summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--muted)}
   .view[open] summary{margin-bottom:10px}
   .view .ordersw{margin-bottom:10px}
+  .introfold{margin-top:16px} .introfold .legend{margin:12px 0}
   .stand{margin-top:10px;font-size:12px;color:var(--muted)}
   .stand .frsub{display:inline;margin:0;color:var(--muted)} .stand .frsub::before{content:" / "}
   .qgoal{font-size:18px;margin:22px 0 10px}
@@ -218,7 +219,7 @@
   .ordersw{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--muted);flex-wrap:wrap}
   .ordersw button{border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:999px;padding:3px 11px;font:inherit;font-size:13px;cursor:pointer}
   .ordersw button[aria-pressed="true"]{background:var(--pill-bg);color:var(--pill-ink);border-color:var(--pill-bg)}
-  .myths{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+  .myths{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px}
   .myth{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px}
   .myth h3{font-size:19px;margin:4px 0 12px}
   .mtag::before{content:"✗ "} .ftag::before{content:"✓ "}
@@ -296,7 +297,7 @@
   .r{--lb:var(--r-bd);--lbg:var(--r-bg);--lt:var(--r-tx)} .r .dot{background:#d8443a}
 
   /* Themen */
-  .topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+  .topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:16px}
   body.both .topics{grid-template-columns:repeat(auto-fill,minmax(460px,1fr))}
   .topic{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;display:flex;flex-direction:column;gap:10px}
   .topic .tag{align-self:flex-start;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink)}
@@ -313,11 +314,13 @@
   .sources{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
   .sources a{color:var(--accent-ink);text-decoration:underline;text-underline-offset:3px}
   .sources .frsub{font-size:.93em}
+  .sources li{overflow-wrap:anywhere;hyphens:auto}
+  .card h3,.card .eli5{hyphens:auto;overflow-wrap:anywhere}
   footer{margin-top:60px;padding:30px 0 50px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
   footer .frsub{margin-top:10px}
 
   @media (max-width:860px){
-    .intro{grid-template-columns:1fr}
+    .intro{grid-template-columns:minmax(0,1fr)} .intro .box{min-width:0} .introfold .ordersw{flex-wrap:wrap}
     .ampel{grid-template-columns:1fr}
     body.both .halves{grid-template-columns:1fr;gap:16px}
     body.both .half{padding:0!important;border:0!important}
@@ -490,6 +493,7 @@ const UI_BASE = {
   refP:{de:"Dieser Begriff ist im Thema {t} erklärt.", fr:"Ce terme est expliqué dans le thème {t}."},
   refGo:{de:"Zum Begriff", fr:"Voir le terme"},
   inTopic:{de:"Im Thema {t}", fr:"Dans le thème {t}"},
+  fold:{de:"Lernziele, Legende und Ansicht", fr:"Objectifs, légende et affichage"},
   also:{de:"Auch im Thema {t}: {n} Treffer", fr:"Aussi dans le thème {t} : {n} résultat(s)"},
   seeSec:{de:"Siehe auch: {t}", fr:"Voir aussi : {t}"},
   partial:{de:"Keine Karte enthält alle Suchwörter. Hier siehst du Karten mit einem Teil davon.", fr:"Aucune fiche ne contient tous les mots recherchés. Voici celles qui en contiennent une partie."},
@@ -2293,12 +2297,12 @@ function useTopic(k){
   if(!S.ui.bTopics && !TOPICS.length) UI.bTopics = null;
 }
 useTopic(topic);
-const EXTRAS = () => ["mythen","quiz", ...(PICK?["wofuer"]:[]), ...(AMPEL.length?["ampel"]:[]), ...(TOPICS.length?["themen"]:[]), ...(URLX?["adresse"]:[]), ...(SOS?["notfall"]:[]), "quellen"];
+const EXTRAS = () => [...(SOS?["notfall"]:[]), ...(PICK?["wofuer"]:[]), ...(AMPEL.length?["ampel"]:[]), ...(URLX?["adresse"]:[]), "mythen", "quiz", ...(TOPICS.length?["themen"]:[]), "quellen"];
 
 let order = "lern";
 try{ if(localStorage.getItem("ki-glossar-order")==="az") order = "az"; }catch(_){}
 
-let mode = "both";
+let mode = matchMedia("(max-width:600px)").matches ? (((navigator.languages && navigator.languages[0]) || navigator.language || "").toLowerCase().startsWith("fr") ? "fr" : "de") : "both";
 try{ const s = localStorage.getItem("ki-glossar-lang"); if(["de","fr","both"].includes(s)) mode = s; }catch(_){}
 let active = "all";
 let expandAll = false;
@@ -2489,18 +2493,31 @@ function refcard(x){
   </article>`;
 }
 
+let viewOpen = false;
+document.addEventListener("toggle", e=>{ if(e.target.classList && e.target.classList.contains("view")) viewOpen = e.target.open; }, true);
 function renderMain(){
-  let h = `<div class="intro">
-    <div class="box"><h2>${L(UI.howH)}</h2><p>${L(UI.howP)}</p>
-      <h3 class="goalsh">${L(UI.goalsH)}</h3><ul class="goals">${UI.goals.map(g=>`<li>${L(g)}</li>`).join("")}</ul>
-      ${UI.note ? `<p class="note">${L(UI.note)}</p>` : ""}<button class="nav startbtn" type="button" data-id="top" aria-pressed="false">${mode==="fr" ? nb(UI.startTop.fr) : UI.startTop.de}</button></div>
-    <div class="box"><div class="legend">
+  const vw = mode==="both" ? UI.view.de+" / "+nb(UI.view.fr) : one(UI.view,mode);
+  const goalsH = `<h3 class="goalsh">${L(UI.goalsH)}</h3><ul class="goals">${UI.goals.map(g=>`<li>${L(g)}</li>`).join("")}</ul>
+      ${UI.note ? `<p class="note">${L(UI.note)}</p>` : ""}`;
+  const startB = `<button class="nav startbtn" type="button" data-id="top" aria-pressed="false">${mode==="fr" ? nb(UI.startTop.fr) : UI.startTop.de}</button>`;
+  const legend = `<div class="legend">
       <div><span class="ic">${IC.key}</span><span>${L(UI.legE)}</span></div>
       <div><span class="ic">${IC.bag}</span><span>${L(UI.legJ)}</span></div>
-      <div><span class="ic">${IC.bulb}</span><span>${L(UI.legT)}</span></div>
-      <details class="view"><summary>${mode==="both" ? UI.view.de+" / "+nb(UI.view.fr) : one(UI.view,mode)}</summary>
-      <div class="ordersw"><span>${mode==="both" ? UI.orderL.de+" / "+UI.orderL.fr : one(UI.orderL,mode)}${mode==="fr"?" ":""}:</span><button type="button" data-order="lern" aria-pressed="${order==="lern"}">${mode==="both" ? UI.orderLern.de+" / "+UI.orderLern.fr : one(UI.orderLern,mode)}</button><button type="button" data-order="az" aria-pressed="${order==="az"}">A–Z</button></div>
-      <label class="expandall"><input type="checkbox" id="expandall"${expandAll?" checked":""}> <span>${mode==="both" ? UI.expandAll.de+" / "+nb(UI.expandAll.fr) : one(UI.expandAll, mode)}</span></label>
+      <div><span class="ic">${IC.bulb}</span><span>${L(UI.legT)}</span></div>`;
+  const viewOpts = `<div class="ordersw"><span>${mode==="both" ? UI.orderL.de+" / "+UI.orderL.fr : one(UI.orderL,mode)}${mode==="fr"?" ":""}:</span><button type="button" data-order="lern" aria-pressed="${order==="lern"}">${mode==="both" ? UI.orderLern.de+" / "+UI.orderLern.fr : one(UI.orderLern,mode)}</button><button type="button" data-order="az" aria-pressed="${order==="az"}">A–Z</button></div>
+      <label class="expandall"><input type="checkbox" id="expandall"${expandAll?" checked":""}> <span>${mode==="both" ? UI.expandAll.de+" / "+nb(UI.expandAll.fr) : one(UI.expandAll, mode)}</span></label>`;
+  let h = NARROW.matches
+    ? `<div class="intro">
+    <div class="box"><h2>${L(UI.howH)}</h2><p>${L(UI.howP)}</p>${startB}
+      <details class="view introfold"${viewOpen?" open":""}><summary>${mode==="both" ? UI.fold.de+" / "+nb(UI.fold.fr) : one(UI.fold,mode)}</summary>
+      ${goalsH}${legend}</div>${viewOpts}</details></div>
+  </div><div class="elsewhere" id="elsewhere" hidden></div><div id="glossary">`
+    : `<div class="intro">
+    <div class="box"><h2>${L(UI.howH)}</h2><p>${L(UI.howP)}</p>
+      ${goalsH}${startB}</div>
+    <div class="box">${legend}
+      <details class="view"${viewOpen?" open":""}><summary>${vw}</summary>
+      ${viewOpts}
       </details>
     </div></div>
   </div><div class="elsewhere" id="elsewhere" hidden></div><div id="glossary">`;
@@ -2515,6 +2532,31 @@ function renderMain(){
   h += `</div><div class="topnext" id="topnext" hidden><p>${L(UI.topNextP)}</p><button class="nav startbtn" type="button" data-id="quiz" aria-pressed="false">${mode==="fr" ? nb(UI.topNextB.fr) : UI.topNextB.de}</button></div>
   <p class="empty" id="empty" style="display:none">${L(UI.empty)}</p>`;
   const tname = id => { const x = ALL.find(t=>t.id===id); return x ? (mode==="fr" ? x.t.fr : x.t.de).replace(/ \(.*\)$/,"") : id; };
+  if(SOS){
+    h += `<section class="cat" id="notfall">
+    <div class="cat-head"><span class="num">${L(UI.sosNum)}</span><h2>${L(UI.sosH)}</h2><div class="desc">${L(UI.sosP)}</div></div>
+    <div class="sos">${SOS.cards.map(c=>`<article class="soscard"><h3>${L(c.h)}</h3><ol>${c.s.map(x=>`<li>${L(x)}</li>`).join("")}</ol></article>`).join("")}</div>
+    <p class="sosfoot">${L(SOS.foot)}</p>
+  </section>`;
+  }
+  if(PICK) h += `<section class="cat" id="wofuer">
+    <div class="cat-head"><span class="num">${L(UI.pickNum)}</span><h2>${L(UI.pickH)}</h2><div class="desc">${L(UI.pickP)}</div></div>
+    <div class="pick">${PICK.rows.map(r=>`<div class="prow"><h3>${L(r.h)}</h3><p>${L(r.d)}</p></div>`).join("")}</div>
+    <div class="pickrules"><h3>${L(UI.pickRules)}</h3><ul>${PICK.rules.map(r=>`<li>${L(r)}</li>`).join("")}</ul></div>
+  </section>`;
+  if(AMPEL.length) h += `<section class="cat" id="ampel">
+    <div class="cat-head"><span class="num">${L(UI.ampelNum)}</span><h2>${L(UI.ampelH)}</h2><div class="desc">${L(UI.ampelP)}</div></div>
+    <div class="ampel">${AMPEL.map(a=>`<div class="light ${a.cls}"><div class="dot"></div><h3>${L(a.h)}</h3><ul>${a.items.map(i=>`<li>${L(i)}</li>`).join("")}</ul></div>`).join("")}</div>
+  </section>`;
+  if(URLX){
+    const fu = u => mode==="fr" ? u.replace("/de/sendungen","/fr/envois").replace(/\/de$/,"/fr").replace("/konto","/compte") : u;
+    const hl = (u,d) => esc(fu(u)).replace(esc(d), `<mark>${esc(d)}</mark>`);
+    h += `<section class="cat" id="adresse">
+    <div class="cat-head"><span class="num">${L(UI.urlNum)}</span><h2>${L(UI.urlH)}</h2><div class="desc">${L(UI.urlP)}</div></div>
+    <div class="urlbox"><div class="anat">${URLX.parts.map(q=>`<div class="seg ${q.c}"><code>${fu(q.p)}</code><span>${L(q.l)}</span></div>`).join("")}</div>
+    <ul class="urlex">${URLX.ex.map(e=>`<li class="${e.ok?"ok":"ko"}"><span class="mark" aria-hidden="true">${e.ok?"✓":"✗"}</span><div><code>${hl(e.u,e.dom)}</code><span>${L(e.d)}</span></div></li>`).join("")}</ul></div>
+  </section>`;
+  }
   h += `<section class="cat" id="mythen">
     <div class="cat-head"><span class="num">${L(UI.mythNum)}</span><h2>${L(UI.mythH)}</h2><div class="desc">${L(UI.mythP)}</div></div>
     <div class="myths">${MYTHS.map(m=>`<article class="myth">
@@ -2531,15 +2573,6 @@ function renderMain(){
       <div class="qfb" hidden></div></li>`).join("")}</ol>`; }).join("")}
     <div class="qscore"><span id="qscore">0 / ${QUIZ.length} ${L(UI.score)}</span><button type="button" class="qreset">${L(UI.again)}</button></div>
   </section>`;
-  if(PICK) h += `<section class="cat" id="wofuer">
-    <div class="cat-head"><span class="num">${L(UI.pickNum)}</span><h2>${L(UI.pickH)}</h2><div class="desc">${L(UI.pickP)}</div></div>
-    <div class="pick">${PICK.rows.map(r=>`<div class="prow"><h3>${L(r.h)}</h3><p>${L(r.d)}</p></div>`).join("")}</div>
-    <div class="pickrules"><h3>${L(UI.pickRules)}</h3><ul>${PICK.rules.map(r=>`<li>${L(r)}</li>`).join("")}</ul></div>
-  </section>`;
-  if(AMPEL.length) h += `<section class="cat" id="ampel">
-    <div class="cat-head"><span class="num">${L(UI.ampelNum)}</span><h2>${L(UI.ampelH)}</h2><div class="desc">${L(UI.ampelP)}</div></div>
-    <div class="ampel">${AMPEL.map(a=>`<div class="light ${a.cls}"><div class="dot"></div><h3>${L(a.h)}</h3><ul>${a.items.map(i=>`<li>${L(i)}</li>`).join("")}</ul></div>`).join("")}</div>
-  </section>`;
   const langs = mode==="both" ? ["de","fr"] : [mode];
   if(TOPICS.length) h += `<section class="cat" id="themen">
     <div class="cat-head"><span class="num">${L(UI.topNum)}</span><h2>${L(UI.topH)}</h2><div class="desc">${L(UI.topP)}</div></div>
@@ -2548,22 +2581,6 @@ function renderMain(){
       ${langs.map(lg=>`<div class="prompt ${lg}"><b>${one(UI.startP,lg)}${mode==="both"?" · "+lg.toUpperCase():""}</b><span class="ptext">${esc(one(t.p,lg))}</span><button class="copy" type="button" data-lg="${lg}">${one(UI.copy,lg)}</button></div>`).join("")}
     </article>`).join("")}</div>
   </section>`;
-  if(URLX){
-    const fu = u => mode==="fr" ? u.replace("/de/sendungen","/fr/envois").replace(/\/de$/,"/fr").replace("/konto","/compte") : u;
-    const hl = (u,d) => esc(fu(u)).replace(esc(d), `<mark>${esc(d)}</mark>`);
-    h += `<section class="cat" id="adresse">
-    <div class="cat-head"><span class="num">${L(UI.urlNum)}</span><h2>${L(UI.urlH)}</h2><div class="desc">${L(UI.urlP)}</div></div>
-    <div class="urlbox"><div class="anat">${URLX.parts.map(q=>`<div class="seg ${q.c}"><code>${fu(q.p)}</code><span>${L(q.l)}</span></div>`).join("")}</div>
-    <ul class="urlex">${URLX.ex.map(e=>`<li class="${e.ok?"ok":"ko"}"><span class="mark" aria-hidden="true">${e.ok?"✓":"✗"}</span><div><code>${hl(e.u,e.dom)}</code><span>${L(e.d)}</span></div></li>`).join("")}</ul></div>
-  </section>`;
-  }
-  if(SOS){
-    h += `<section class="cat" id="notfall">
-    <div class="cat-head"><span class="num">${L(UI.sosNum)}</span><h2>${L(UI.sosH)}</h2><div class="desc">${L(UI.sosP)}</div></div>
-    <div class="sos">${SOS.cards.map(c=>`<article class="soscard"><h3>${L(c.h)}</h3><ol>${c.s.map(x=>`<li>${L(x)}</li>`).join("")}</ol></article>`).join("")}</div>
-    <p class="sosfoot">${L(SOS.foot)}</p>
-  </section>`;
-  }
   h += `<section class="cat" id="quellen">
     <div class="cat-head"><span class="num">${L(UI.srcNum)}</span><h2>${L(UI.srcH)}</h2><div class="desc">${L(UI.srcP)}</div></div>
     <ol class="sources">${SOURCES.map(q=>`<li><a href="${q.u}" target="_blank" rel="noopener">${L(q.t)}</a></li>`).join("")}</ol>
@@ -2580,7 +2597,7 @@ function renderNav(){
   document.getElementById("chips").innerHTML = NAV().map(c=>`<button class="chip nav" type="button" data-id="${c.id}" aria-pressed="${c.id===active}">${chipName(c.name)}</button>`).join("");
   const cnt = id => { const n = id==="top" ? TERMS.filter(t=>t.top).length : TERMS.filter(t=>t.cat===id).length; return n ? `<span class="n" data-n="${n}">${n}</span>` : ""; };
   document.getElementById("toc").innerHTML = `<h2>${mode==="fr" ? UI.toc.fr : mode==="de" ? UI.toc.de : UI.toc.de+" · "+UI.toc.fr}</h2><ul>${NAV().map((c,i)=>
-    `${c.id==="mythen"||c.id===CATS[0].id?'<li class="sep"></li>':""}<li><button class="nav" type="button" data-id="${c.id}" aria-pressed="${c.id===active}"><span>${L(c.name)}</span>${cnt(c.id)}</button></li>`).join("")}</ul>`;
+    `${c.id===EXTRAS()[0]||c.id===CATS[0].id?'<li class="sep"></li>':""}<li><button class="nav" type="button" data-id="${c.id}" aria-pressed="${c.id===active}"><span>${L(c.name)}</span>${cnt(c.id)}</button></li>`).join("")}</ul>`;
   document.querySelectorAll(".langs button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.lang===mode));
   const ph = NARROW.matches ? UI.searchShort : UI.search;
   document.getElementById("q").placeholder = mode==="both" ? ph.both : mode==="fr" ? nb(ph.fr) : ph.de;
@@ -2780,7 +2797,7 @@ document.getElementById("q").addEventListener("input", ()=>{
   spy();
 });
 
-NARROW.addEventListener?.("change", renderNav);
+NARROW.addEventListener?.("change", ()=>{ const y = window.scrollY; renderMain(); renderNav(); apply(); window.scrollTo(0, y); });
 window.addEventListener("hashchange", ()=>{ const h = location.hash.slice(1); if(isTopic(h) && h!==topic) setTopic(h); });
 renderAll(); paintThemeBtn();
 </script>
