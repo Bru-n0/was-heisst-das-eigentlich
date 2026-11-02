@@ -2,7 +2,7 @@
 <html lang="de" class="nojs">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-+pMFfv433UXLI0goyh058uVNxtK+hKD4HX7DCJfKr6Y='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-xKh9RyE8RyTQfMPzTxW52R5amPhD9Uvgdb/yz/CSEaQ='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Was heisst das eigentlich? · Ça veut dire quoi, au juste ?</title>
@@ -141,6 +141,15 @@
   .search{flex:1 1 260px;position:relative}
   .search input{width:100%;padding:11px 16px 11px 42px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);font:inherit;font-size:16px;color:var(--ink)}
   .search input:focus{outline:2px solid var(--focus);outline-offset:1px;border-color:transparent}
+  .sugg{position:absolute;top:calc(100% - 4px);z-index:30;margin:0;padding:6px;list-style:none;background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;box-shadow:0 12px 28px rgba(0,0,0,.18)}
+  .sugg[hidden]{display:none}
+  .sugg li{display:flex;flex-direction:column;gap:1px;padding:9px 12px;border-radius:8px;cursor:pointer;line-height:1.3}
+  .sugg li[aria-selected="true"],.sugg li:hover{background:var(--accent-soft)}
+  .sugg li b{font-weight:600;color:var(--ink)} .sugg li small{font-size:12.5px;color:var(--muted)}
+  .cardfoot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+  .cardfoot .morebtn{margin-top:0}
+  .linkbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:none;color:var(--muted);border-radius:999px;padding:5px 11px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+  .linkbtn:hover{color:var(--ink);background:var(--soft)} .linkbtn svg{width:14px;height:14px}
   .search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
   .langs{display:inline-flex;border:1px solid var(--line-strong);border-radius:10px;overflow:hidden;flex:0 0 auto;background:var(--surface)}
   .langs button{border:0;background:transparent;color:var(--ink);font:inherit;font-size:14px;font-weight:600;padding:9px 13px;cursor:pointer}
@@ -315,7 +324,7 @@
   .sources a{color:var(--accent-ink);text-decoration:underline;text-underline-offset:3px}
   .sources .frsub{font-size:.93em}
   .sources li{overflow-wrap:anywhere;hyphens:auto}
-  .card h3,.card .eli5{hyphens:auto;overflow-wrap:anywhere}
+  .card h3,.card .eli5{overflow-wrap:anywhere}
   footer{margin-top:60px;padding:30px 0 50px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
   footer .frsub{margin-top:10px}
 
@@ -360,7 +369,7 @@
   }
   @media print{
     :root{--bg:#fff;--surface:#fff;--ink:#111;--muted:#444;--line:#ccc;--soft:#f3f3f3;--prompt:#f3f3f3;--prompt-ink:#111;--fr:#3d4d63}
-    .toolbar,.copy,.toc,.themebtn,#xtip{display:none!important}
+    .toolbar,.copy,.toc,.themebtn,#xtip,.linkbtn{display:none!important}
     .layout{display:block}
     header.hero{padding:20px 0;background:#fff;color:#111}
     header.hero::before,header.hero::after,.series,.elsewhere{display:none}
@@ -379,11 +388,12 @@
 <header class="hero"><div class="wrap" id="hero"></div></header>
 
 <div class="toolbar">
+  <ul id="sugg" class="sugg" role="listbox" aria-label="Vorschläge / Suggestions" hidden></ul>
   <div class="wrap">
-    <label class="search">
+    <div class="search">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input id="q" type="search" aria-label="Suchen / Rechercher">
-    </label>
+      <input id="q" type="search" aria-label="Suchen / Rechercher" role="combobox" aria-autocomplete="list" aria-controls="sugg" aria-expanded="false" autocomplete="off" enterkeyhint="search">
+    </div>
     <div class="langs" role="group" aria-label="Sprache / Langue">
       <button type="button" data-lang="de">DE</button>
       <button type="button" data-lang="fr">FR</button>
@@ -496,6 +506,8 @@ const UI_BASE = {
   fold:{de:"Lernziele, Legende und Ansicht", fr:"Objectifs, légende et affichage"},
   also:{de:"Auch im Thema {t}: {n} Treffer", fr:"Aussi dans le thème {t} : {n} résultat(s)"},
   seeSec:{de:"Siehe auch: {t}", fr:"Voir aussi : {t}"},
+  copyLink:{de:"Link kopieren", fr:"Copier le lien"},
+  linkCopied:{de:"Link kopiert ✓", fr:"Lien copié ✓"},
   partial:{de:"Keine Karte enthält alle Suchwörter. Hier siehst du Karten mit einem Teil davon.", fr:"Aucune fiche ne contient tous les mots recherchés. Voici celles qui en contiennent une partie."},
   urlChip:{de:"Adressen lesen", fr:"Lire une adresse"},
   sosChip:{de:"Notfallkarte", fr:"Carte d'urgence"},
@@ -2278,6 +2290,166 @@ const CYB_UI = {
 };
 
 /* ================= THEMEN-REGISTER / REGISTRE DES THÈMES ================= */
+/* ================= ALLTAGSWÖRTER FÜR DIE SUCHE / MOTS DU QUOTIDIEN POUR LA RECHERCHE ================= */
+/* Unsichtbare Suchwörter: so, wie Leute fragen. Schlüssel = en des Begriffs. */
+const KW = {
+  "Artificial Intelligence (AI)": {de:"künstliche Intelligenz kluge Computer denkende Maschine", fr:"intelligence artificielle ordinateur intelligent machine qui pense"},
+  "Machine Learning": {de:"lernt aus Daten Computer lernen Muster erkennen", fr:"apprend des données machine qui apprend reconnaître des motifs"},
+  "Training Data": {de:"woher weiss die KI Lernmaterial Datengrundlage", fr:"d'où l'IA sait matériel d'apprentissage base de données"},
+  "Model": {de:"Version GPT-5 Gehirn der KI Modellname", fr:"version cerveau de l'IA nom du modèle"},
+  "Open Source and Local AI": {de:"offline auf eigenem Computer Llama kostenlos herunterladen", fr:"hors ligne sur son ordinateur Llama télécharger gratuit"},
+  "Generative AI": {de:"GenAI Texte erzeugen Bilder erzeugen KI schreibt", fr:"GenAI créer du texte créer des images l'IA écrit"},
+  "Chatbot": {de:"Chat mit KI Fragen stellen Kundendienst Bot", fr:"discuter avec une IA poser des questions service client bot"},
+  "Large Language Model (LLM)": {de:"Sprach-KI GPT wie funktioniert ChatGPT Wahrscheinlichkeit", fr:"IA du langage GPT comment fonctionne ChatGPT probabilité"},
+  "Hallucination": {de:"KI lügt falsche Antwort erfunden Fehler stimmt nicht", fr:"l'IA ment fausse réponse inventé erreur c'est faux"},
+  "Jagged Frontier": {de:"kann nicht rechnen Stärken und Schwächen unzuverlässig", fr:"ne sait pas calculer forces et faiblesses peu fiable"},
+  "Token": {de:"Wortteile Silben Kosten Länge Limit", fr:"morceaux de mots syllabes coût longueur limite"},
+  "Context Window": {de:"vergisst langer Chat Gedächtnis zu lang Limit", fr:"oublie longue conversation mémoire trop long limite"},
+  "Multimodal": {de:"Foto hochladen Bild verstehen Sprache Video", fr:"envoyer une photo comprendre une image voix vidéo"},
+  "Image Generator": {de:"Bild erstellen Bild malen Midjourney DALL-E Foto erzeugen", fr:"créer une image dessiner Midjourney DALL-E générer une photo"},
+  "Knowledge Cutoff": {de:"veraltet aktuell nicht aktuell weiss nicht neueste Datum", fr:"dépassé pas à jour ne connaît pas l'actualité date"},
+  "AI Search": {de:"Google mit KI Antwort statt Links KI-Übersicht suchen", fr:"Google avec IA réponse au lieu de liens aperçu IA chercher"},
+  "Reasoning Model": {de:"nachdenken denkt länger Denkmodus o3 Thinking", fr:"réfléchir réfléchit plus longtemps mode réflexion Thinking"},
+  "ChatGPT": {de:"Chat GPT OpenAI GPT bekanntester Chatbot", fr:"Chat GPT OpenAI GPT chatbot le plus connu"},
+  "Claude": {de:"Anthropic Chatbot", fr:"Anthropic chatbot"},
+  "Gemini": {de:"Google KI Bard Google Assistant Android", fr:"IA de Google Bard Google Assistant Android"},
+  "Meta AI": {de:"WhatsApp KI blauer Kreis bunter Kreis Instagram Facebook", fr:"IA WhatsApp cercle bleu cercle coloré Instagram Facebook"},
+  "Microsoft Copilot": {de:"Microsoft 365 Office Word Outlook Teams Excel KI", fr:"Microsoft 365 Office Word Outlook Teams Excel IA"},
+  "Perplexity": {de:"Suchmaschine mit Quellen Recherche", fr:"moteur de recherche avec sources recherche"},
+  "DeepSeek": {de:"China chinesische KI", fr:"Chine IA chinoise"},
+  "DeepL": {de:"übersetzen Übersetzer Übersetzung", fr:"traduire traducteur traduction"},
+  "Le Chat (Mistral)": {de:"Mistral französische KI europäische KI Frankreich", fr:"Mistral IA française IA européenne France"},
+  "Apertus": {de:"Schweizer KI ETH EPFL Swiss AI Schweiz", fr:"IA suisse EPFZ EPFL Swiss AI Suisse"},
+  "Euria": {de:"Infomaniak Schweizer KI Daten in der Schweiz", fr:"Infomaniak IA suisse données en Suisse"},
+  "Lumo": {de:"Proton verschlüsselt private KI", fr:"Proton chiffré IA privée"},
+  "Prompt": {de:"Eingabe Frage an die KI Befehl was eingeben", fr:"saisie question à l'IA commande quoi écrire"},
+  "Prompt Engineering": {de:"besser fragen gute Fragen stellen Tipps für Prompts", fr:"mieux demander bien poser ses questions astuces prompts"},
+  "Context": {de:"Hintergrund mehr Infos geben Zusammenhang", fr:"arrière-plan donner plus d'infos situation"},
+  "Role Prompting": {de:"Du bist ein Experte Persona Rolle spielen", fr:"tu es un expert persona jouer un rôle"},
+  "Few-Shot Prompting": {de:"Muster vorgeben Vorlage zeigen Beispiel", fr:"montrer un modèle donner un exemple"},
+  "Iteration": {de:"nochmal fragen verbessern nachfragen Feedback geben", fr:"redemander améliorer relancer donner un retour"},
+  "Chain of Thought": {de:"schrittweise denken lassen Begründung erklären lassen", fr:"raisonner pas à pas justification faire expliquer"},
+  "Custom Instructions / Memory": {de:"Gedächtnis merkt sich Einstellungen Personalisierung Erinnerung", fr:"mémoire se souvient réglages personnalisation"},
+  "Prompt Template": {de:"Vorlage wiederverwenden Muster-Prompt Sammlung", fr:"gabarit réutiliser prompt type collection"},
+  "AI Assistant": {de:"digitaler Helfer Assistent Hilfe im Büro", fr:"aide numérique assistant aide au bureau"},
+  "Free vs. Paid Plans": {de:"kostenlos Abo Plus Pro Preis was kostet", fr:"gratuit abonnement Plus Pro prix combien ça coûte"},
+  "AI Agent": {de:"KI erledigt Aufgaben bucht selbst handelt automatisch Agent", fr:"l'IA fait les tâches réserve seule agit automatiquement agent"},
+  "Automation": {de:"automatisch Routine Arbeit sparen wiederkehrend", fr:"automatique routine gagner du temps répétitif"},
+  "Transcription": {de:"Sitzung aufnehmen Protokoll Audio in Text Diktat abtippen", fr:"enregistrer une séance procès-verbal audio en texte dictée"},
+  "Summarization": {de:"Zusammenfassung kürzen das Wichtigste lange Mail", fr:"résumé raccourcir l'essentiel long e-mail"},
+  "Machine Translation": {de:"übersetzen Übersetzung Fremdsprache Google Translate", fr:"traduire traduction langue étrangère Google Traduction"},
+  "Voice Mode": {de:"sprechen mit KI reden Stimme Sprachsteuerung", fr:"parler à l'IA voix commande vocale"},
+  "Integration": {de:"verbinden Outlook Kalender Google Drive Zugriff Plugin", fr:"connecter Outlook agenda Google Drive accès plugin"},
+  "Retrieval-Augmented Generation (RAG)": {de:"eigene Dateien Firmenwissen Dokumente durchsuchen Wissensdatenbank", fr:"ses propres fichiers savoir de l'entreprise documents base de connaissances"},
+  "Human in the Loop": {de:"Kontrolle prüfen freigeben Verantwortung Mensch", fr:"contrôle vérifier valider responsabilité humain"},
+  "Enterprise vs. Consumer": {de:"Firmenlizenz privat Firmenkonto Arbeit Lizenz", fr:"licence d'entreprise privé compte pro travail licence"},
+  "Shadow AI": {de:"heimlich verboten ohne Erlaubnis KI am Arbeitsplatz", fr:"en cachette interdit sans autorisation IA au travail"},
+  "AI Policy": {de:"Regeln Weisung Firma erlaubt verboten Leitfaden", fr:"règles directive entreprise autorisé interdit guide"},
+  "Bias": {de:"Vorurteile Diskriminierung unfair Klischee einseitig", fr:"préjugés discrimination injuste cliché partial"},
+  "Deepfake": {de:"Fake Video gefälschtes Foto falsche Stimme Fälschung", fr:"fausse vidéo fausse photo fausse voix falsification"},
+  "AI-Powered Phishing": {de:"Betrug mit KI perfekte Mail gefälschte Mail", fr:"arnaque avec l'IA e-mail parfait faux e-mail"},
+  "Prompt Injection": {de:"Manipulation versteckter Text KI austricksen Hack", fr:"manipulation texte caché tromper l'IA piratage"},
+  "Copyright": {de:"darf ich das verwenden Bilder Rechte Urheber geistiges Eigentum", fr:"ai-je le droit images droits auteur propriété intellectuelle"},
+  "Transparency / Disclosure": {de:"kennzeichnen offenlegen mit KI erstellt angeben", fr:"indiquer signaler créé avec l'IA mentionner"},
+  "AI Detector": {de:"erkennen ob KI geschrieben Plagiat KI-Text erkennen", fr:"détecter si écrit par l'IA plagiat reconnaître un texte d'IA"},
+  "EU Artificial Intelligence Act": {de:"EU Gesetz Verordnung Europa Regulierung", fr:"loi UE règlement Europe régulation"},
+  "Energy and Environmental Impact": {de:"Strom Umwelt Klima CO2 Wasser Nachhaltigkeit", fr:"électricité environnement climat CO2 eau durabilité"},
+  "AI Regulation in Switzerland": {de:"Gesetz Schweiz Bundesrat Regulierung Recht", fr:"loi Suisse Conseil fédéral régulation droit"},
+  "Fact-Checking": {de:"prüfen stimmt das Quellen überprüfen Fakten", fr:"vérifier est-ce vrai contrôler les sources faits"},
+  "AI Literacy": {de:"KI lernen Weiterbildung Grundwissen Kurs", fr:"apprendre l'IA formation connaissances de base cours"},
+  "Learning with AI": {de:"Nachhilfe Lernen Schule Prüfung vorbereiten", fr:"soutien scolaire apprendre école préparer un examen"},
+  "AI Sparring Partner": {de:"üben Gespräch üben Feedback Rollenspiel Bewerbung", fr:"s'entraîner exercer un entretien retour jeu de rôle candidature"},
+  "Human Skills": {de:"Empathie Kreativität Urteilsvermögen was bleibt menschlich", fr:"empathie créativité jugement ce qui reste humain"},
+  "Task Exposure": {de:"Jobverlust ersetzt KI meinen Job Arbeitsplatz Zukunft", fr:"perte d'emploi l'IA remplace mon travail emploi avenir"},
+  "Productivity Gains": {de:"Zeit sparen schneller effizienter", fr:"gagner du temps plus rapide plus efficace"},
+  "AI Champion": {de:"Ansprechperson Botschafter Team KI einführen", fr:"référent ambassadeur équipe introduire l'IA"},
+
+  "Internet and Web": {de:"Unterschied Internet Web Netz online", fr:"différence internet web réseau en ligne"},
+  "Website and Web Page": {de:"Homepage Seite Internetseite", fr:"page d'accueil site page internet"},
+  "Server": {de:"Rechner im Netz Host wo liegt die Seite", fr:"ordinateur du réseau hébergeur où est le site"},
+  "Data Packet": {de:"wie reisen Daten Übertragung Pakete", fr:"comment voyagent les données transmission paquets"},
+  "IP Address": {de:"meine IP Adresse des Geräts Nummer", fr:"mon IP adresse de l'appareil numéro"},
+  "Protocol": {de:"Regeln Standard http TCP", fr:"règles norme http TCP"},
+  "Link and URL": {de:"Adresse prüfen Link prüfen Adresszeile echt oder falsch", fr:"vérifier une adresse vérifier un lien barre d'adresse vrai ou faux"},
+  "Domain": {de:".ch Webadresse Name der Seite echt", fr:".ch adresse web nom du site authentique"},
+  "DNS": {de:"Seite lädt nicht Namensauflösung Adressbuch", fr:"le site ne charge pas résolution de noms annuaire"},
+  "HTTPS": {de:"Schloss sicher Verbindung verschlüsselt grünes Schloss", fr:"cadenas sûr connexion chiffrée"},
+  "Redirect": {de:"umgeleitet andere Seite Weiterleitung", fr:"redirigé autre page"},
+  "QR Code": {de:"scannen Handy Kamera Code", fr:"scanner téléphone caméra code"},
+  "Wi-Fi": {de:"Wifi WLAN-Passwort kein Internet zuhause Funknetz", fr:"wifi mot de passe wifi pas d'internet à la maison"},
+  "Router": {de:"Box Internetbox Modem neu starten", fr:"box internet modem redémarrer"},
+  "Internet Service Provider": {de:"Swisscom Sunrise Salt Provider Abo Anbieter wechseln", fr:"Swisscom Sunrise Salt opérateur abonnement changer de fournisseur"},
+  "Mobile Network": {de:"Handynetz Daten Roaming Empfang 5G", fr:"réseau mobile données itinérance réception 5G"},
+  "Fibre Optics": {de:"Glasfaseranschluss schnelles Internet FTTH", fr:"raccordement fibre internet rapide FTTH"},
+  "Bandwidth": {de:"Internet langsam Geschwindigkeit Speedtest schnell", fr:"internet lent vitesse test de débit rapide"},
+  "Browser": {de:"Chrome Safari Firefox Edge Internetprogramm", fr:"Chrome Safari Firefox Edge programme internet"},
+  "Search Engine": {de:"Google Bing suchen googeln", fr:"Google Bing chercher googler"},
+  "Sponsored Results": {de:"Werbung bei Google Anzeige gekaufte Treffer", fr:"publicité sur Google annonce résultats payés"},
+  "Incognito Mode": {de:"privat surfen anonym Verlauf privates Fenster", fr:"navigation privée anonyme historique fenêtre privée"},
+  "Cookies": {de:"Kekse Tracking speichern Website merkt sich", fr:"traceurs enregistrer le site se souvient"},
+  "Cookie Banner": {de:"akzeptieren ablehnen Zustimmung Cookies Hinweis", fr:"accepter refuser consentement cookies avis"},
+  "Cloud": {de:"iCloud OneDrive Google Drive Online-Speicher", fr:"iCloud OneDrive Google Drive stockage en ligne"},
+  "Data Centre": {de:"Serverfarm Rechenzentren Strom", fr:"ferme de serveurs datacenter électricité"},
+  "Sync": {de:"synchronisieren auf allen Geräten abgleichen", fr:"synchroniser sur tous les appareils"},
+  "Upload and Download": {de:"hochladen herunterladen", fr:"téléverser télécharger envoyer"},
+  "Streaming": {de:"Netflix YouTube Spotify Video schauen", fr:"Netflix YouTube Spotify regarder une vidéo"},
+  "Email": {de:"Mail Mailadresse Posteingang Gmail Outlook", fr:"courriel adresse e-mail boîte de réception Gmail Outlook"},
+  "Messenger": {de:"WhatsApp Signal Threema Chat-App Nachrichten", fr:"WhatsApp Signal Threema application de messagerie messages"},
+  "App": {de:"Anwendung Programm Handy App Store", fr:"application programme téléphone App Store"},
+  "Platform": {de:"Facebook Instagram TikTok YouTube Social Media soziale Netzwerke", fr:"Facebook Instagram TikTok YouTube réseaux sociaux"},
+  "Algorithm": {de:"Feed was sehe ich Empfehlungen Rangfolge", fr:"fil ce que je vois recommandations classement"},
+  "Filter Bubble": {de:"Echokammer einseitig nur eine Meinung", fr:"chambre d'écho partial une seule opinion"},
+  "Social Login": {de:"mit Google anmelden mit Apple anmelden einloggen", fr:"se connecter avec Google se connecter avec Apple"},
+  "Data Protection": {de:"Privatsphäre persönliche Daten Datenschutzgesetz DSGVO", fr:"vie privée données personnelles loi sur la protection des données"},
+  "Digital Footprint": {de:"Spuren im Netz was weiss das Internet über mich googeln", fr:"traces en ligne ce qu'internet sait sur moi"},
+  "Tracking": {de:"verfolgt beobachtet überwacht Werbung", fr:"suivi observé surveillé publicité"},
+  "Targeted Advertising": {de:"Werbung warum sehe ich das Anzeigen", fr:"publicité pourquoi je vois ça annonces"},
+  "Metadata": {de:"Foto Standort Daten über Daten EXIF", fr:"photo localisation données sur les données EXIF"},
+  "Deleting Online": {de:"Konto löschen Daten löschen Recht auf Vergessen", fr:"supprimer un compte effacer des données droit à l'oubli"},
+
+  "Cybersecurity": {de:"IT-Sicherheit Schutz vor Hackern sicher online", fr:"sécurité informatique protection contre les pirates sûr en ligne"},
+  "Cyberattack": {de:"Hacker Angriff gehackt Cyberkriminalität", fr:"pirate attaque piraté cybercriminalité"},
+  "Malware": {de:"Virus Schadprogramm gehackt infiziert", fr:"virus programme malveillant piraté infecté"},
+  "Virus and Trojan": {de:"Computervirus infiziert Wurm Schadprogramm", fr:"virus informatique infecté ver programme malveillant"},
+  "Vulnerability": {de:"Lücke Schwachstelle Sicherheitsproblem", fr:"faille vulnérabilité problème de sécurité"},
+  "Update": {de:"aktualisieren Aktualisierung Software Patch", fr:"actualiser mise à jour logiciel correctif"},
+  "Encryption": {de:"verschlüsselt Schlüssel geheim Ende-zu-Ende", fr:"chiffré clé secret de bout en bout"},
+  "Social Engineering": {de:"Manipulation Trick Täuschung Vertrauen ausnutzen", fr:"manipulation ruse tromperie abuser de la confiance"},
+  "Phishing": {de:"Fishing Phising gefälschte Mail Betrug Mail Passwort abgreifen Fake-Mail", fr:"fishing phising faux e-mail arnaque e-mail voler le mot de passe"},
+  "Smishing and Vishing": {de:"komische SMS Paket SMS Post SMS Betrugsanruf falscher Anruf", fr:"SMS bizarre SMS colis faux appel appel frauduleux"},
+  "Fake Authority Calls": {de:"falsche Polizei Anruf Polizei angeblich Behörde Telefon Betrug", fr:"faux policier appel de la police prétendue autorité arnaque téléphonique"},
+  "CEO Fraud": {de:"Chef-Betrug falsche Zahlungsanweisung Überweisung Chef", fr:"faux patron fausse demande de paiement virement chef"},
+  "Quishing": {de:"QR-Code Betrug Parkuhr Busse falscher QR-Code", fr:"faux code QR parcmètre amende arnaque QR"},
+  "Classified Ad Fraud": {de:"Tutti Ricardo Anibis Verkauf Betrug Kleinanzeige", fr:"Tutti Ricardo Anibis vente arnaque petite annonce"},
+  "Investment Fraud": {de:"Krypto Trading Geld anlegen Bitcoin Betrug Rendite", fr:"crypto trading investir Bitcoin arnaque rendement"},
+  "Romance Scam": {de:"Online-Dating Liebe Geld überweisen Betrug Partnersuche", fr:"rencontres en ligne amour envoyer de l'argent arnaque"},
+  "Strong Password": {de:"Passwort gutes Passwort Passphrase sicher", fr:"mot de passe bon mot de passe phrase de passe sûr"},
+  "Password Manager": {de:"Passwörter speichern Bitwarden 1Password Schlüsselbund", fr:"enregistrer les mots de passe Bitwarden 1Password trousseau"},
+  "Two-Factor Authentication": {de:"2FA Code per SMS Bestätigung zweiter Faktor Authenticator", fr:"2FA code par SMS confirmation deuxième facteur authentificateur"},
+  "Passkey": {de:"ohne Passwort anmelden Fingerabdruck Face ID", fr:"se connecter sans mot de passe empreinte digitale Face ID"},
+  "Data Breach": {de:"Daten gestohlen Leak Passwort geleakt", fr:"données volées fuite mot de passe divulgué"},
+  "Account Takeover": {de:"Konto gehackt Account gehackt Instagram gehackt WhatsApp gehackt ausgesperrt", fr:"compte piraté Instagram piraté WhatsApp piraté bloqué"},
+  "Ransomware": {de:"Lösegeld Dateien verschlüsselt Erpressung", fr:"rançon fichiers chiffrés extorsion"},
+  "Backup": {de:"Sicherungskopie sichern Fotos sichern Daten verloren", fr:"copie de sécurité sauvegarder photos perdu mes données"},
+  "Antivirus": {de:"Virenscanner Antivirenprogramm Defender", fr:"scanner antivirus programme antivirus Defender"},
+  "Firewall": {de:"Schutzmauer Netzwerkschutz", fr:"mur de protection protection réseau"},
+  "Public Wi-Fi and VPN": {de:"Hotel WLAN Café WLAN Bahnhof gratis WLAN VPN", fr:"wifi d'hôtel wifi du café wifi gratuit VPN"},
+  "Connected Devices": {de:"Smart Home Kamera Smart TV Internet der Dinge IoT", fr:"maison connectée caméra TV connectée internet des objets IoT"},
+  "Unknown USB Stick": {de:"gefundener Stick USB fremdes Gerät", fr:"clé trouvée USB appareil inconnu"},
+  "Reporting an Incident": {de:"was tun gehackt melden IT informieren Notfall", fr:"que faire piraté signaler informer l'informatique urgence"},
+  "Four-Eyes Principle": {de:"zweite Person prüfen Kontrolle Freigabe", fr:"deuxième personne contrôler validation"},
+  "Least Privilege": {de:"Zugriffsrechte Berechtigungen Admin Rechte", fr:"droits d'accès autorisations admin"},
+  "Screen Lock and Clean Desk": {de:"Bildschirm sperren Windows L Arbeitsplatz aufräumen", fr:"verrouiller l'écran Windows L ranger son bureau"},
+  "Working from Home Securely": {de:"Homeoffice zuhause arbeiten Telearbeit", fr:"télétravail travailler à la maison"},
+  "Phishing Simulation": {de:"Testmail Schulung Übung Phishing-Test", fr:"e-mail de test formation exercice test d'hameçonnage"},
+  "Shadow IT": {de:"private Tools nicht erlaubt Dropbox ohne Erlaubnis", fr:"outils privés non autorisé Dropbox sans autorisation"},
+  "Federal Office for Cyber Security (BACS)": {de:"NCSC melden Bund Meldestelle Cyber", fr:"NCSC signaler Confédération guichet de signalement"},
+  "Mandatory Reporting": {de:"Pflicht melden 24 Stunden kritische Infrastruktur", fr:"obligation signaler 24 heures infrastructure critique"},
+  "Data Breach Notification": {de:"EDÖB melden Datenpanne Datenleck melden", fr:"PFPDT annoncer violation fuite de données signaler"},
+  "Police Report": {de:"Anzeige erstatten Polizei Strafanzeige Betrug melden 117", fr:"porter plainte police plainte pénale signaler une arnaque 117"},
+  "Voice Cloning": {de:"falsche Stimme Enkeltrick Anruf Stimme kopiert", fr:"fausse voix arnaque aux petits-enfants appel voix copiée"}
+};
+
 const SETS = {
   ki:{label:{de:"KI", fr:"IA"}, cats:KI_CATS, terms:KI_TERMS, order:KI_ORDER, myths:KI_MYTHS, quiz:KI_QUIZ, ampel:KI_AMPEL, pick:KI_PICK, ideas:KI_IDEAS, sources:KI_SOURCES,
       refs:[{id:"algorithm", cat:"grundlagen"}, {id:"data-protection", cat:"sicher"}], ui:{}},
@@ -2287,7 +2459,8 @@ const SETS = {
 };
 const isTopic = k => typeof k==="string" && Object.prototype.hasOwnProperty.call(SETS, k);
 let topic = "ki";
-try{ const h = location.hash.slice(1); const st = localStorage.getItem("ki-glossar-topic"); if(isTopic(h)) topic = h; else if(isTopic(st)) topic = st; }catch(_){}
+let pendingId = null;
+try{ const [h, hid] = location.hash.slice(1).split("/"); const st = localStorage.getItem("ki-glossar-topic"); if(isTopic(h)){ topic = h; pendingId = hid || null; } else if(isTopic(st)) topic = st; }catch(_){}
 let UI, CATS, TERMS, ORDER, MYTHS, QUIZ, AMPEL, PICK, TOPICS, SOURCES, REFS, URLX, SOS;
 function useTopic(k){
   const S = SETS[k];
@@ -2326,6 +2499,7 @@ const IC = {
   key: SV('<circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2M16 7l3 3M14 9l2 2"/>'),
   bag: SV('<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/>'),
   home: SV('<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/>'),
+  link: SV('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
   bulb: SV('<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>'),
   moon: SV('<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'),
   sun: SV('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>')
@@ -2352,7 +2526,7 @@ function score(x, toks, relaxed){
   const hits = toks.filter(w=>tokHit(x.n, w));
   if(!hits.length || (!relaxed && hits.length<toks.length)) return 0;
   let sc = 0;
-  hits.forEach(w=>{ sc += tokHit(x.tn, w) ? 20 : 2; });
+  hits.forEach(w=>{ sc += tokHit(x.tn, w) ? 20 : tokHit(x.kn, w) ? 12 : 2; });
   const qn = toks.join(" ");
   if([x.t.de, x.t.fr, x.en].some(t=>{ const a = norm(String(t).replace(/[-‑–]/g," ")); return a===qn || a.replace(/ \(.*$/,"")===qn || a.replace(/^.*\((.*)\)$/,"$1")===qn; })) sc += 100;
   return sc;
@@ -2361,7 +2535,8 @@ const ftext = x => x.f ? Object.values(x.f).map(v=>v.de+" "+v.fr).join(" ") : ""
 const ALL = [];
 Object.entries(SETS).forEach(([k,S])=>S.terms.forEach(x=>{ x.id = slug(x.en); x.topic = k;
   x.s = strip([x.t.de,x.t.fr,x.en,x.e.de,x.e.fr,x.j.de,x.j.fr,x.p?x.p.de+" "+x.p.fr:"",ftext(x)].join(" ")).toLowerCase();
-  x.n = sidx(x.s); x.tn = sidx([x.t.de,x.t.fr,x.en].join(" ")); ALL.push(x); }));
+  const kw = KW[x.en]; x.k = kw ? kw.de+" "+kw.fr : "";
+  x.n = sidx(x.s+" "+x.k); x.tn = sidx([x.t.de,x.t.fr,x.en].join(" ")); x.kn = sidx(x.k); ALL.push(x); }));
 const BYID = {}; ALL.forEach(x=>{ BYID[x.id] = x; });
 const tlabel = (k, lg) => SETS[k].label[lg==="fr"?"fr":"de"];
 const XREF = {
@@ -2479,7 +2654,8 @@ function card(x){
     ${mode==="both"?`<div class="en-top">EN · <span lang="en">${x.en}</span></div>`:""}
     <div class="halves">${langs.map(half).join("")}</div>
     ${x.st?`<div class="stand">${L(UI.stand)}</div>`:""}
-    <button class="morebtn" type="button" aria-expanded="false">${mode==="both" ? UI.more.de+" / "+nb(UI.more.fr) : one(UI.more, mode)}</button>
+    <div class="cardfoot"><button class="morebtn" type="button" aria-expanded="false">${mode==="both" ? UI.more.de+" / "+nb(UI.more.fr) : one(UI.more, mode)}</button>
+    <button class="linkbtn" type="button" data-link="${x.topic}/${x.id}">${IC.link}<span>${mode==="both" ? UI.copyLink.de+" / "+nb(UI.copyLink.fr) : one(UI.copyLink, mode)}</span></button></div>
   </article>`;
 }
 
@@ -2615,7 +2791,8 @@ function renderAll(){
 function apply(){
   const term = document.getElementById("q").value.trim().toLowerCase();
   const toks = qtoks(term);
-  const relaxed = toks.length>1 && !ALL.some(x=>score(x, toks)>0);
+  const headHit = id=>{ const el = document.getElementById(id); if(!el) return false; const ix = sidx(el.querySelector("h2").textContent+" "+UI[XNAME[id]].de+" "+UI[XNAME[id]].fr); return toks.every(w=>tokHit(ix, w)); };
+  const relaxed = toks.length>1 && !EXTRAS().some(headHit) && !ALL.some(x=>score(x, toks)>0);
   document.body.classList.toggle("searching", !!term);
   let total = 0;
   document.querySelectorAll("#glossary section.cat").forEach(sec=>{
@@ -2697,6 +2874,7 @@ function goTo(id){
   document.getElementById("q").value = "";
   const x = ALL.find(t=>t.id===id); if(!x) return;
   if(x.topic!==topic) setTopic(x.topic, true); else select("all", false);
+  try{ history.replaceState(null, "", location.pathname+"#"+x.topic+"/"+id); }catch(_){}
   const el = document.getElementById("t-"+id); if(!el) return;
   window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - document.querySelector(".toolbar").offsetHeight - 20, behavior:SMOOTH});
   el.classList.add("flash","open"); const mb = el.querySelector(".morebtn"); if(mb) mb.setAttribute("aria-expanded","true"); setTimeout(()=>el.classList.remove("flash"), 1600);
@@ -2746,6 +2924,12 @@ let quizScore = 0;
 document.addEventListener("click", e=>{
   const tb = e.target.closest(".topicbtn");
   if(tb){ if(tb.dataset.topic!==topic) setTopic(tb.dataset.topic); return; }
+  const lb = e.target.closest(".linkbtn");
+  if(lb){ const url = location.href.split(/[?#]/)[0]+"#"+lb.dataset.link; const lab = lb.querySelector("span"); const old = lab.textContent;
+    const done = ()=>{ lab.textContent = mode==="both" ? UI.linkCopied.de+" / "+nb(UI.linkCopied.fr) : one(UI.linkCopied, mode); say(one(UI.linkCopied, mode==="fr"?"fr":"de")); setTimeout(()=>{ lab.textContent = old; }, 2000); };
+    const fallback = ()=>{ const ta=document.createElement("textarea"); ta.value=url; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy");}catch(_){} ta.remove(); done(); };
+    try{ navigator.clipboard.writeText(url).then(done, fallback); }catch(_){ fallback(); }
+    return; }
   const eb = e.target.closest(".elsebtn");
   if(eb && eb.dataset.sec){ document.getElementById("q").value = ""; select(eb.dataset.sec); return; }
   if(eb){ setTopic(eb.dataset.topic, true); const g = document.getElementById("glossary");
@@ -2791,15 +2975,66 @@ function revealResults(){
   if(top < bar || top > window.innerHeight * 0.6) window.scrollTo({top: top + window.scrollY - bar - 16, behavior:"instant"});
 }
 document.getElementById("q").addEventListener("input", ()=>{
-  if(active!=="all" && document.getElementById("q").value.trim()) select("all", false);
+  const v = document.getElementById("q").value.trim();
+  if(active!=="all" && v) select("all", false);
   apply();
-  if(document.getElementById("q").value.trim()) revealResults();
-  spy();
+  if(v) revealResults();
+  spy(); suggest();
+  try{ history.replaceState(null, "", location.pathname+(v ? "?q="+encodeURIComponent(v) : "")+"#"+topic); }catch(_){}
 });
 
+/* Vorschläge beim Tippen (Combobox) */
+const QI = document.getElementById("q"), SG = document.getElementById("sugg");
+let sgItems = [], sgActive = -1;
+function sgScore(x, toks){
+  if(!toks.every(w=>tokHit(x.tn, w) || tokHit(x.kn, w))) return 0;
+  let sc = 0; toks.forEach(w=>{ sc += tokHit(x.tn, w) ? 20 : 8; });
+  const qn = toks.join(" ");
+  [x.t.de, x.t.fr, x.en].forEach(t=>{ const a = norm(String(t).replace(/[-‑–]/g," ")); if(a===qn || a.replace(/ \(.*$/,"")===qn) sc += 100; else if(a.startsWith(qn)) sc += 40; });
+  return sc + (x.topic===topic ? 3 : 0);
+}
+function closeSugg(){ SG.hidden = true; QI.setAttribute("aria-expanded","false"); QI.removeAttribute("aria-activedescendant"); sgActive = -1; }
+function placeSugg(){
+  const tb = document.querySelector(".toolbar").getBoundingClientRect(), r = QI.getBoundingClientRect();
+  if(NARROW.matches){ SG.style.left = "12px"; SG.style.right = "12px"; SG.style.width = ""; }
+  else { SG.style.left = (r.left - tb.left)+"px"; SG.style.right = ""; SG.style.width = Math.max(r.width, 380)+"px"; }
+}
+function suggest(){
+  const v = QI.value.trim(); const toks = qtoks(v);
+  if(v.length<2 || !toks.length){ closeSugg(); return; }
+  sgItems = ALL.map(x=>({x, sc:sgScore(x, toks)})).filter(o=>o.sc>0).sort((a,b)=>b.sc-a.sc).slice(0,5).map(o=>o.x);
+  if(!sgItems.length){ closeSugg(); return; }
+  const lg = mode==="fr" ? "fr" : "de";
+  SG.innerHTML = sgItems.map((x,i)=>{ const ttl = mode==="both" && x.t.de!==x.t.fr ? `${x.t.de} / ${nb(x.t.fr)}` : one(x.t, lg);
+    const wh = l => one(UI.inTopic, l).replace("{t}", tlabel(x.topic, l));
+    const where = x.topic===topic ? "" : mode==="both" ? wh("de")+" / "+wh("fr") : wh(lg);
+    return `<li role="option" id="sg-${i}" data-id="${x.id}" aria-selected="false"><b>${esc(ttl)}</b>${where?`<small>${esc(where)}</small>`:""}</li>`; }).join("");
+  sgActive = -1; QI.removeAttribute("aria-activedescendant");
+  placeSugg(); SG.hidden = false; QI.setAttribute("aria-expanded","true");
+}
+function markSugg(i){
+  sgActive = i; [...SG.children].forEach((li,k)=>li.setAttribute("aria-selected", k===i));
+  if(i>=0){ QI.setAttribute("aria-activedescendant", "sg-"+i); SG.children[i].scrollIntoView({block:"nearest"}); } else QI.removeAttribute("aria-activedescendant");
+}
+function pickSugg(i){ const x = sgItems[i]; if(!x) return; closeSugg(); goTo(x.id); }
+QI.addEventListener("keydown", e=>{
+  if(SG.hidden) return;
+  if(e.key==="ArrowDown"){ e.preventDefault(); markSugg((sgActive+1) % sgItems.length); }
+  else if(e.key==="ArrowUp"){ e.preventDefault(); markSugg(sgActive<=0 ? sgItems.length-1 : sgActive-1); }
+  else if(e.key==="Enter"){ if(sgActive>=0){ e.preventDefault(); pickSugg(sgActive); } else { closeSugg(); } }
+  else if(e.key==="Escape"){ e.preventDefault(); e.stopPropagation(); closeSugg(); }
+});
+SG.addEventListener("mousedown", e=>e.preventDefault());
+SG.addEventListener("click", e=>{ const li = e.target.closest("li[data-id]"); if(li) pickSugg([...SG.children].indexOf(li)); });
+QI.addEventListener("blur", ()=>setTimeout(closeSugg, 120));
+QI.addEventListener("focus", ()=>{ if(QI.value.trim().length>=2) suggest(); });
+window.addEventListener("resize", ()=>{ if(!SG.hidden) placeSugg(); });
+
 NARROW.addEventListener?.("change", ()=>{ const y = window.scrollY; renderMain(); renderNav(); apply(); window.scrollTo(0, y); });
-window.addEventListener("hashchange", ()=>{ const h = location.hash.slice(1); if(isTopic(h) && h!==topic) setTopic(h); });
+window.addEventListener("hashchange", ()=>{ const [h, hid] = location.hash.slice(1).split("/"); if(hid && BYID[hid]) goTo(hid); else if(isTopic(h) && h!==topic) setTopic(h); });
 renderAll(); paintThemeBtn();
+if(pendingId && BYID[pendingId]) setTimeout(()=>goTo(pendingId), 60);
+else { try{ const q0 = new URLSearchParams(location.search).get("q"); if(q0){ document.getElementById("q").value = q0.slice(0,80); apply(); setTimeout(revealResults, 60); } }catch(_){} }
 </script>
 </body>
 </html>
