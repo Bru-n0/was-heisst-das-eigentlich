@@ -2,7 +2,7 @@
 <html lang="de" class="nojs">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-QWHZpwCzocqSEIoXQbZCZMasDOasRrjWgsyuKLyv1wc='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-SAUPHhKP2mNMwk5NCtm+1FHW6HlHjahqD3QYZxlMjAQ='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Was heisst das eigentlich? · Ça veut dire quoi, au juste ?</title>
@@ -68,6 +68,8 @@
   .card.ref .refgo{align-self:flex-start;font-weight:700;margin-top:4px}
   .elsewhere{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
   .elsewhere[hidden]{display:none}
+  body.searching #glossary{display:flex;flex-direction:column}
+  .partial{flex-basis:100%;margin:0;font-size:14.5px;color:var(--muted)} .partial .frsub{margin-top:2px}
   .elsebtn{font:inherit;font-size:14px;font-weight:600;padding:8px 14px;border-radius:10px;border:1px solid var(--line-strong);background:var(--accent-soft);color:var(--accent-ink);cursor:pointer}
   #xtip em{display:block;font-style:normal;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.75;margin-bottom:2px}
   .urlbox{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px}
@@ -489,6 +491,8 @@ const UI_BASE = {
   refGo:{de:"Zum Begriff", fr:"Voir le terme"},
   inTopic:{de:"Im Thema {t}", fr:"Dans le thème {t}"},
   also:{de:"Auch im Thema {t}: {n} Treffer", fr:"Aussi dans le thème {t} : {n} résultat(s)"},
+  seeSec:{de:"Siehe auch: {t}", fr:"Voir aussi : {t}"},
+  partial:{de:"Keine Karte enthält alle Suchwörter. Hier siehst du Karten mit einem Teil davon.", fr:"Aucune fiche ne contient tous les mots recherchés. Voici celles qui en contiennent une partie."},
   urlChip:{de:"Adressen lesen", fr:"Lire une adresse"},
   sosChip:{de:"Notfallkarte", fr:"Carte d'urgence"},
   sosNum:{de:"Notfall", fr:"Urgence"},
@@ -2325,10 +2329,36 @@ const IC = {
 
 /* Querverweise: welche Wörter auf welchen Begriff zeigen */
 const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+/* Suche: Normalisierung (Akzente, Umlaute, ß, Bindestriche), Wortstämme, Rangfolge */
+const norm = t => strip(String(t)).toLowerCase().replace(/œ/g,"oe").replace(/æ/g,"ae").normalize("NFD").replace(/[̀-ͯ]/g,"")
+  .replace(/ß/g,"ss").replace(/ae/g,"a").replace(/oe/g,"o").replace(/ue/g,"u")
+  .replace(/[„“”«»‹›‚‘’'"()\[\]{}:;,.!?/\\|*+=<>…·•›→]/g," ").replace(/\s+/g," ").trim();
+const sidx = t => { const r = String(t); return " "+norm(r.replace(/[-‑–]/g," "))+" | "+norm(r.replace(/[-‑–]/g,""))+" "; };
+const STOP = new Set("was wie wo wer ist sind der die das den dem des ein eine einen und oder mit fur von zu im in am an auf ich mein meine mir man tun tut mach macht kann bei le la les l d de du des un une et ou que qu quoi comment est sont ce c s y en au aux pour avec mon ma mes je".split(" "));
+const qtoks = q => { const all = norm(String(q).replace(/[-‑–]/g," ")).split(" ").filter(Boolean); const t = all.filter(w=>!STOP.has(w)); return t.length ? t : all; };
+const STEMS = ["ieren","ungen","ung","ern","en","er","es","e","n","s"];
+const stemOf = w => { for(const x of STEMS) if(w.endsWith(x) && w.length-x.length>=3) return w.slice(0,-x.length); return null; };
+const rxEsc = w => w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+function tokHit(idx, w){
+  if(w.length<=2) return new RegExp("(^|[^a-z0-9])"+rxEsc(w)+"($|[^a-z0-9])").test(idx);
+  if(idx.includes(w)) return true;
+  const st = stemOf(w); return !!st && idx.includes(st);
+}
+function score(x, toks, relaxed){
+  const hits = toks.filter(w=>tokHit(x.n, w));
+  if(!hits.length || (!relaxed && hits.length<toks.length)) return 0;
+  let sc = 0;
+  hits.forEach(w=>{ sc += tokHit(x.tn, w) ? 20 : 2; });
+  const qn = toks.join(" ");
+  if([x.t.de, x.t.fr, x.en].some(t=>{ const a = norm(String(t).replace(/[-‑–]/g," ")); return a===qn || a.replace(/ \(.*$/,"")===qn || a.replace(/^.*\((.*)\)$/,"$1")===qn; })) sc += 100;
+  return sc;
+}
 const ftext = x => x.f ? Object.values(x.f).map(v=>v.de+" "+v.fr).join(" ") : "";
 const ALL = [];
 Object.entries(SETS).forEach(([k,S])=>S.terms.forEach(x=>{ x.id = slug(x.en); x.topic = k;
-  x.s = strip([x.t.de,x.t.fr,x.en,x.e.de,x.e.fr,x.j.de,x.j.fr,x.p?x.p.de+" "+x.p.fr:"",ftext(x)].join(" ")).toLowerCase(); ALL.push(x); }));
+  x.s = strip([x.t.de,x.t.fr,x.en,x.e.de,x.e.fr,x.j.de,x.j.fr,x.p?x.p.de+" "+x.p.fr:"",ftext(x)].join(" ")).toLowerCase();
+  x.n = sidx(x.s); x.tn = sidx([x.t.de,x.t.fr,x.en].join(" ")); ALL.push(x); }));
+const BYID = {}; ALL.forEach(x=>{ BYID[x.id] = x; });
 const tlabel = (k, lg) => SETS[k].label[lg==="fr"?"fr":"de"];
 const XREF = {
   "Large Language Model (LLM)": {de:["Sprachmodell","LLM"], fr:["LLM"]},
@@ -2548,7 +2578,7 @@ const NARROW = matchMedia("(max-width:600px)");
 function renderNav(){
   const chipName = p => mode==="both" ? `${p.de} / ${p.fr}` : plain(p);
   document.getElementById("chips").innerHTML = NAV().map(c=>`<button class="chip nav" type="button" data-id="${c.id}" aria-pressed="${c.id===active}">${chipName(c.name)}</button>`).join("");
-  const cnt = id => { const n = id==="top" ? TERMS.filter(t=>t.top).length : TERMS.filter(t=>t.cat===id).length; return n ? `<span class="n">${n}</span>` : ""; };
+  const cnt = id => { const n = id==="top" ? TERMS.filter(t=>t.top).length : TERMS.filter(t=>t.cat===id).length; return n ? `<span class="n" data-n="${n}">${n}</span>` : ""; };
   document.getElementById("toc").innerHTML = `<h2>${mode==="fr" ? UI.toc.fr : mode==="de" ? UI.toc.de : UI.toc.de+" · "+UI.toc.fr}</h2><ul>${NAV().map((c,i)=>
     `${c.id==="mythen"||c.id===CATS[0].id?'<li class="sep"></li>':""}<li><button class="nav" type="button" data-id="${c.id}" aria-pressed="${c.id===active}"><span>${L(c.name)}</span>${cnt(c.id)}</button></li>`).join("")}</ul>`;
   document.querySelectorAll(".langs button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.lang===mode));
@@ -2567,16 +2597,22 @@ function renderAll(){
 
 function apply(){
   const term = document.getElementById("q").value.trim().toLowerCase();
+  const toks = qtoks(term);
+  const relaxed = toks.length>1 && !ALL.some(x=>score(x, toks)>0);
   document.body.classList.toggle("searching", !!term);
   let total = 0;
   document.querySelectorAll("#glossary section.cat").forEach(sec=>{
     const catOk = active==="all" || active==="top" || active===sec.id;
-    let n = 0;
+    let n = 0, best = 0;
     sec.querySelectorAll(".card").forEach(card=>{
-      const ok = catOk && (active!=="top" || card.dataset.top==="1") && (!term || card.dataset.search.includes(term));
-      card.style.display = ok ? "" : "none"; if(ok) n++;
+      const x = BYID[card.id.slice(2)];
+      const sc = toks.length && x ? score(x, toks, relaxed) : 0;
+      const ok = catOk && (active!=="top" || card.dataset.top==="1") && (!toks.length || sc>0);
+      card.style.display = ok ? "" : "none"; card.style.order = toks.length && ok ? String(-sc) : "";
+      if(ok){ n++; best = Math.max(best, sc); }
     });
-    sec.style.display = n ? "" : "none";
+    sec.style.display = n ? "" : "none"; sec.style.order = toks.length && n ? String(-best) : "";
+    const tn = document.querySelector(`#toc button[data-id="${sec.id}"] .n`); if(tn) tn.textContent = toks.length ? n : tn.dataset.n;
     sec.querySelector(".count").textContent = term ? `${n} ${mode==="both" ? "Treffer / résultat(s)" : plain(UI.hits)}` : "";
     total += n;
   });
@@ -2584,12 +2620,17 @@ function apply(){
   EXTRAS().forEach(id=>{ const on = !term && (active==="all" || active===id); document.getElementById(id).style.display = on ? "" : "none"; extra = extra || on; });
   document.getElementById("topnext").hidden = !(active==="top" && !term);
   const ew = document.getElementById("elsewhere");
-  const other = term ? Object.keys(SETS).filter(k=>k!==topic).map(k=>({k, n:ALL.filter(x=>x.topic===k && x.s.includes(term)).length})).filter(o=>o.n) : [];
-  ew.hidden = !other.length;
-  ew.innerHTML = other.map(o=>{ const t = lg => one(UI.also,lg).replace("{t}", tlabel(o.k,lg)).replace("{n}", o.n);
+  const other = toks.length ? Object.keys(SETS).filter(k=>k!==topic).map(k=>({k, n:ALL.filter(x=>x.topic===k && score(x, toks, relaxed)>0).length})).filter(o=>o.n) : [];
+  const hitAll = (t)=>{ const ix = sidx(t); return toks.every(w=>tokHit(ix, w)); };
+  let secs = toks.length ? EXTRAS().filter(id=>hitAll(document.getElementById(id).querySelector("h2").textContent+" "+UI[XNAME[id]].de+" "+UI[XNAME[id]].fr)) : [];
+  if(toks.length && !secs.length && total===0) secs = EXTRAS().filter(id=>hitAll(document.getElementById(id).textContent));
+  ew.hidden = !other.length && !secs.length && !relaxed;
+  ew.innerHTML = (relaxed ? `<p class="partial">${L(UI.partial)}</p>` : "") + secs.map(id=>{ const t = lg => one(UI.seeSec,lg).replace("{t}", strip(one(UI[XNAME[id]], lg)));
+    return `<button type="button" class="elsebtn" data-sec="${id}">${mode==="both" ? t("de")+" / "+t("fr") : t(mode)} →</button>`; }).join("")
+   + other.map(o=>{ const t = lg => one(UI.also,lg).replace("{t}", tlabel(o.k,lg)).replace("{n}", o.n);
     return `<button type="button" class="elsebtn" data-topic="${o.k}">${mode==="both" ? t("de")+" / "+t("fr") : t(mode)} →</button>`; }).join("");
   document.getElementById("empty").style.display = (total===0 && !extra) ? "block" : "none";
-  if(term){ const lg = mode==="fr" ? "fr" : "de"; const extraTxt = other.map(o=>one(UI.also,lg).replace("{t}", tlabel(o.k,lg)).replace("{n}", o.n)).join(". ");
+  if(term){ const lg = mode==="fr" ? "fr" : "de"; const extraTxt = secs.map(id=>one(UI.seeSec,lg).replace("{t}", strip(one(UI[XNAME[id]], lg)))).concat(other.map(o=>one(UI.also,lg).replace("{t}", tlabel(o.k,lg)).replace("{n}", o.n))).join(". ");
     say(total ? `${total} ${one(UI.hits,lg)}${extraTxt ? ". "+extraTxt : ""}` : strip(one(UI.empty,lg)) + (extraTxt ? " "+extraTxt : ""), 600); }
 }
 
@@ -2689,6 +2730,7 @@ document.addEventListener("click", e=>{
   const tb = e.target.closest(".topicbtn");
   if(tb){ if(tb.dataset.topic!==topic) setTopic(tb.dataset.topic); return; }
   const eb = e.target.closest(".elsebtn");
+  if(eb && eb.dataset.sec){ document.getElementById("q").value = ""; select(eb.dataset.sec); return; }
   if(eb){ setTopic(eb.dataset.topic, true); const g = document.getElementById("glossary");
     window.scrollTo({top: g.getBoundingClientRect().top + window.scrollY - document.querySelector(".toolbar").offsetHeight - 16, behavior:SMOOTH}); return; }
   const ob = e.target.closest(".ordersw button");
@@ -2723,15 +2765,16 @@ document.addEventListener("click", e=>{
 /* Suchergebnisse in den sichtbaren Bereich holen */
 function revealResults(){
   const ew = document.getElementById("elsewhere"), em = document.getElementById("empty");
-  const firstCard = [...document.querySelectorAll("#glossary .card")].find(c=>c.style.display!=="none");
-  const target = !ew.hidden ? ew : firstCard ? firstCard.closest("section.cat") : em;
+  const secs = [...document.querySelectorAll("#glossary section.cat")].filter(c=>c.style.display!=="none");
+  const firstSec = secs.sort((a,b)=>a.getBoundingClientRect().top-b.getBoundingClientRect().top)[0];
+  const target = !ew.hidden ? ew : firstSec || em;
   if(!target) return;
   const bar = document.querySelector(".toolbar").offsetHeight;
   const top = target.getBoundingClientRect().top;
   if(top < bar || top > window.innerHeight * 0.6) window.scrollTo({top: top + window.scrollY - bar - 16, behavior:"instant"});
 }
 document.getElementById("q").addEventListener("input", ()=>{
-  if(EXTRAS().includes(active)) select("all", false);
+  if(active!=="all" && document.getElementById("q").value.trim()) select("all", false);
   apply();
   if(document.getElementById("q").value.trim()) revealResults();
   spy();
