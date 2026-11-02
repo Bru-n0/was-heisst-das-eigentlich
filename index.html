@@ -2,7 +2,7 @@
 <html lang="de" class="nojs">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-GIk1KkbVs0G39gHlL4rWOq5XWdT41nIClAHCxgjBolc='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XuXWwNPW6FQHZFGypdg3J52+ByV4KDh9xCPVEzUiJzw=' 'sha256-6xRYweVsd/QPZpJxbGI4R+bVh9GC5Ls81z8LMwSM3Tw='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Was heisst das eigentlich? · Ça veut dire quoi, au juste ?</title>
@@ -98,7 +98,12 @@
   .sosfoot{margin:16px 0 0;padding:14px 16px;border-radius:12px;background:var(--soft);font-size:15px}
   .sosfoot .frsub{margin-top:6px}
   #foot p{margin:0}
-  #foot .privacy{margin-top:12px;font-size:.9em;opacity:.85}
+  #foot .privacy{margin-top:12px;font-size:.9em}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--pill-bg);color:var(--pill-ink);padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none}
+  .skip:focus{top:12px;outline:2px solid var(--focus);outline-offset:2px}
+  #main:focus{outline:none}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important} }
   .noscript{max-width:560px;margin:40px max(16px,calc((100% - 560px)/2));padding:24px;border-radius:16px;background:var(--surface);border:1px solid var(--line);border-top:6px solid var(--accent);font-size:17px}
   .noscript a{color:var(--accent-ink);font-weight:700;word-break:break-all}
   .nojs header.hero:not(.shero),.nojs .toolbar,.nojs .layout,.nojs #xtip,.nojs body>footer{display:none}
@@ -210,6 +215,8 @@
   .myth h3 .frsub{text-decoration:none;font-style:italic}
   .mtag,.ftag{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
   .mtag{color:#b4352c} .ftag{color:var(--accent-ink)}
+  :root[data-theme="dark"] .mtag{color:#fca5a5}
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .mtag{color:#fca5a5} }
   .mtag .frsub,.ftag .frsub{display:inline;margin:0}.mtag .frsub::before,.ftag .frsub::before{content:" / "}
   .myth p{margin:4px 0 0}
   .myth .see{margin-top:12px;font-size:14px;color:var(--muted)}
@@ -257,9 +264,11 @@
 
   /* Querverweise */
   a.xref{color:inherit;text-decoration:underline;text-decoration-color:var(--focus);text-decoration-thickness:2px;text-underline-offset:3px;cursor:pointer}
-  a.xref:hover,a.xref:focus{color:var(--accent-ink);outline:none}
+  a.xref:hover{color:var(--accent-ink)}
+  a.xref:focus-visible{color:var(--accent-ink);outline:2px solid var(--focus);outline-offset:2px;border-radius:3px}
+  button:focus-visible,summary:focus-visible,a:focus-visible,input[type=checkbox]:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
   #xtip{position:absolute;z-index:50;max-width:320px;background:var(--ink);color:var(--bg);border-radius:10px;padding:10px 12px;font-size:14px;line-height:1.45;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s}
-  #xtip.on{opacity:1;transform:none}
+  #xtip.on{opacity:1;transform:none;pointer-events:auto}
   #xtip b{display:block;margin-bottom:3px}
   #xtip small{display:block;margin-top:6px;opacity:.7;font-size:12px}
 
@@ -350,6 +359,7 @@
 </style>
 </head>
 <body class="both">
+<a class="skip" href="#main" id="skip">Zum Inhalt springen</a>
 <noscript><div class="noscript"><p><b>Was heisst das eigentlich?</b> Glossar zu KI, Internet und Cybersicherheit.</p><p>Diese Vorschau zeigt die Seite nicht an. Öffne sie im Browser:<br><a href="https://bru-n0.github.io/was-heisst-das-eigentlich/">bru-n0.github.io/was-heisst-das-eigentlich</a></p><p lang="fr">Cet aperçu n'affiche pas la page. Ouvrez-la dans un navigateur.</p></div></noscript>
 
 <header class="hero"><div class="wrap" id="hero"></div></header>
@@ -357,7 +367,7 @@
 <div class="toolbar">
   <div class="wrap">
     <label class="search">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="q" type="search" aria-label="Suchen / Rechercher">
     </label>
     <div class="langs" role="group" aria-label="Sprache / Langue">
@@ -370,13 +380,14 @@
   </div>
 </div>
 
-<div class="wrap layout"><nav class="toc" id="toc" aria-label="Inhalt / Sommaire"></nav><main id="main"></main></div>
-<div id="xtip" role="tooltip"></div>
+<div class="wrap layout"><nav class="toc" id="toc" aria-label="Inhalt / Sommaire"></nav><main id="main" tabindex="-1"></main></div>
+<div id="xtip" role="tooltip"></div><div id="sr" class="sr-only" role="status" aria-live="polite"></div>
 <footer><div class="wrap" id="foot"></div></footer>
 
 <script>
 /* ============ TEXTE / TEXTES ============ */
 const UI_BASE = {
+  skip:{de:"Zum Inhalt springen", fr:"Aller au contenu"},
   rights:{de:"© 2026 Bru-n0. Alle Rechte vorbehalten. Offizielle Adresse: bru-n0.github.io/was-heisst-das-eigentlich", fr:"© 2026 Bru-n0. Tous droits réservés. Adresse officielle : bru-n0.github.io/was-heisst-das-eigentlich"},
   privacy:{de:"<b>Datenschutz:</b> Diese Seite speichert keine persönlichen Daten. Nur dein eigener Browser merkt sich die gewählte Sprache und den Hell-Dunkel-Modus. Bereitgestellt wird die Seite über GitHub Pages, GitHub protokolliert dabei technische Zugriffsdaten wie IP-Adressen.",
            fr:"<b>Protection des données :</b> ce site n'enregistre aucune donnée personnelle. Seul votre navigateur retient la langue choisie et le mode clair ou sombre. Le site est hébergé sur GitHub Pages, qui enregistre des données techniques d'accès comme les adresses IP."},
@@ -2261,14 +2272,14 @@ function card(x){
   const langs = mode==="both" ? ["de","fr"] : [mode];
   const half = lg => { const used = new Set(); const lk = s => linkify(one(s,lg), lg, x.id, used); return `
     <div class="half" lang="${lg}">
-      <div>${mode==="both"?`<span class="lg">${lg.toUpperCase()}</span>`:""}<h3>${ttl(one(x.t,lg))}</h3>${mode!=="both"?`<div class="en">${x.en}</div>`:""}</div>
+      <div>${mode==="both"?`<span class="lg">${lg.toUpperCase()}</span>`:""}<h3>${ttl(one(x.t,lg))}</h3>${mode!=="both"?`<div class="en" lang="en">${x.en}</div>`:""}</div>
       <p class="eli5"><span class="ic">${IC.key}</span><span>${lk(x.e)}</span></p>
       <p class="job"><b>${x.ja?IC.home:IC.bag} ${one(x.ja?UI.alltag:UI.job,lg)}</b>${lk(x.j)}</p>
       ${x.p?`<p class="tip">${IC.bulb}<span>${lk(x.p)}</span></p>`:""}
     </div>`; };
   const search = strip([x.t.de,x.t.fr,x.en,x.e.de,x.e.fr,x.j.de,x.j.fr,x.p?x.p.de+" "+x.p.fr:""].join(" ")).toLowerCase();
   return `<article class="card" id="t-${x.id}" data-top="${x.top?1:0}" data-search="${esc(search)}">${x.top?'<span class="topbadge">Top 10</span>':""}
-    ${mode==="both"?`<div class="en-top">EN · ${x.en}</div>`:""}
+    ${mode==="both"?`<div class="en-top">EN · <span lang="en">${x.en}</span></div>`:""}
     <div class="halves">${langs.map(half).join("")}</div>
     ${x.st?`<div class="stand">${L(UI.stand)}</div>`:""}
     <button class="morebtn" type="button" aria-expanded="false">${mode==="both" ? UI.more.de+" / "+nb(UI.more.fr) : one(UI.more, mode)}</button>
@@ -2375,6 +2386,7 @@ function renderNav(){
   document.querySelectorAll(".langs button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.lang===mode));
   const ph = NARROW.matches ? UI.searchShort : UI.search;
   document.getElementById("q").placeholder = mode==="both" ? ph.both : mode==="fr" ? nb(ph.fr) : ph.de;
+  document.getElementById("skip").textContent = mode==="both" ? UI.skip.de+" / "+UI.skip.fr : one(UI.skip, mode);
   const tb = document.getElementById("theme"); tb.setAttribute("aria-label", mode==="fr" ? UI.theme.fr : UI.theme.de); tb.title = tb.getAttribute("aria-label");
 }
 
@@ -2409,6 +2421,8 @@ function apply(){
   ew.innerHTML = other.map(o=>{ const t = lg => one(UI.also,lg).replace("{t}", tlabel(o.k,lg)).replace("{n}", o.n);
     return `<button type="button" class="elsebtn" data-topic="${o.k}">${mode==="both" ? t("de")+" / "+t("fr") : t(mode)} →</button>`; }).join("");
   document.getElementById("empty").style.display = (total===0 && !extra) ? "block" : "none";
+  if(term){ const lg = mode==="fr" ? "fr" : "de"; const extraTxt = other.map(o=>one(UI.also,lg).replace("{t}", tlabel(o.k,lg)).replace("{n}", o.n)).join(". ");
+    say(total ? `${total} ${one(UI.hits,lg)}${extraTxt ? ". "+extraTxt : ""}` : strip(one(UI.empty,lg)) + (extraTxt ? " "+extraTxt : ""), 600); }
 }
 
 function select(id, scroll=true){
@@ -2417,7 +2431,7 @@ function select(id, scroll=true){
   apply();
   if(!scroll) return;
   const target = id==="all" ? document.querySelector(".intro") : id==="top" ? document.getElementById("glossary") : document.getElementById(id);
-  if(target) window.scrollTo({top: target.getBoundingClientRect().top + window.scrollY - document.querySelector(".toolbar").offsetHeight - 16, behavior:"smooth"});
+  if(target) window.scrollTo({top: target.getBoundingClientRect().top + window.scrollY - document.querySelector(".toolbar").offsetHeight - 16, behavior:SMOOTH});
   spy(); setTimeout(spy, 700);
 }
 
@@ -2445,8 +2459,12 @@ function showTip(a){
   tip.classList.add("on");
 }
 const hideTip = () => tip.classList.remove("on");
-document.addEventListener("mouseover", e=>{ const a = e.target.closest("a.xref"); if(a) showTip(a); });
-document.addEventListener("mouseout", e=>{ if(e.target.closest("a.xref")) hideTip(); });
+document.addEventListener("mouseover", e=>{ const a = e.target.closest("a.xref"); if(a){ clearTimeout(tipTimer); showTip(a); } });
+let tipTimer = null;
+document.addEventListener("mouseout", e=>{ if(e.target.closest("a.xref")) tipTimer = setTimeout(hideTip, 250); });
+tip.addEventListener("mouseenter", ()=>clearTimeout(tipTimer));
+tip.addEventListener("mouseleave", hideTip);
+document.addEventListener("keydown", e=>{ if(e.key==="Escape" && tip.classList.contains("on")) hideTip(); });
 document.addEventListener("focusin", e=>{ const a = e.target.closest("a.xref"); if(a) showTip(a); else hideTip(); });
 function goTo(id){
   hideTip();
@@ -2454,9 +2472,15 @@ function goTo(id){
   const x = ALL.find(t=>t.id===id); if(!x) return;
   if(x.topic!==topic) setTopic(x.topic, true); else select("all", false);
   const el = document.getElementById("t-"+id); if(!el) return;
-  window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - document.querySelector(".toolbar").offsetHeight - 20, behavior:"smooth"});
+  window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - document.querySelector(".toolbar").offsetHeight - 20, behavior:SMOOTH});
   el.classList.add("flash","open"); const mb = el.querySelector(".morebtn"); if(mb) mb.setAttribute("aria-expanded","true"); setTimeout(()=>el.classList.remove("flash"), 1600);
 }
+
+const SMOOTH = matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+
+/* Ansagen für Bildschirmleser */
+let sayTimer = null;
+function say(txt, delay=0){ clearTimeout(sayTimer); sayTimer = setTimeout(()=>{ const el = document.getElementById("sr"); el.textContent = ""; setTimeout(()=>{ el.textContent = txt; }, 50); }, delay); }
 
 /* Themenwechsel */
 function setTopic(k, keepScroll){
@@ -2498,7 +2522,7 @@ document.addEventListener("click", e=>{
   if(tb){ if(tb.dataset.topic!==topic) setTopic(tb.dataset.topic); return; }
   const eb = e.target.closest(".elsebtn");
   if(eb){ setTopic(eb.dataset.topic, true); const g = document.getElementById("glossary");
-    window.scrollTo({top: g.getBoundingClientRect().top + window.scrollY - document.querySelector(".toolbar").offsetHeight - 16, behavior:"smooth"}); return; }
+    window.scrollTo({top: g.getBoundingClientRect().top + window.scrollY - document.querySelector(".toolbar").offsetHeight - 16, behavior:SMOOTH}); return; }
   const ob = e.target.closest(".ordersw button");
   if(ob){ order = ob.dataset.order; try{ localStorage.setItem("ki-glossar-order", order); }catch(_){}
     const y = window.scrollY; renderMain(); apply(); window.scrollTo(0,y); return; }
@@ -2509,12 +2533,17 @@ document.addEventListener("click", e=>{
     li.querySelectorAll(".opt").forEach(b=>{ const kk=+b.dataset.k; if(kk===q.a) b.classList.add("right"); else if(kk===k) b.classList.add("wrong"); b.disabled = true; });
     const fb = li.querySelector(".qfb"); fb.hidden = false; fb.innerHTML = `<b>${L(ok?UI.right:UI.wrong)}</b> ${L(q.x)}`;
     if(ok) quizScore++;
-    document.getElementById("qscore").innerHTML = `${quizScore} / ${QUIZ.length} ${L(UI.score)}`; return; }
+    document.getElementById("qscore").innerHTML = `${quizScore} / ${QUIZ.length} ${L(UI.score)}`;
+    { const lg = mode==="fr" ? "fr" : "de"; say(`${one(ok?UI.right:UI.wrong,lg)} ${strip(one(q.x,lg))} ${quizScore} / ${QUIZ.length} ${one(UI.score,lg)}.`); }
+    return; }
   if(e.target.closest(".qreset")){ quizScore = 0; const y = window.scrollY; renderMain(); apply(); window.scrollTo(0,y); return; }
   const mb = e.target.closest(".morebtn");
   if(mb){ const c = mb.closest(".card"); const open = c.classList.toggle("open"); mb.setAttribute("aria-expanded", open);
     const lab = p => mode==="both" ? p.de+" / "+nb(p.fr) : one(p, mode);
     mb.textContent = open ? lab(UI.less) : lab(UI.more); return; }
+  const sk = e.target.closest(".skip");
+  if(sk){ e.preventDefault(); const m = document.getElementById("main"); m.focus({preventScroll:true});
+    window.scrollTo({top: m.getBoundingClientRect().top + window.scrollY - document.querySelector(".toolbar").offsetHeight - 8, behavior:SMOOTH}); return; }
   const n = e.target.closest(".nav"); if(n){ select(n.dataset.id); return; }
   const a = e.target.closest("a.xref"); if(a){ e.preventDefault(); goTo(a.dataset.id); return; }
   const b = e.target.closest(".copy"); if(!b) return;
